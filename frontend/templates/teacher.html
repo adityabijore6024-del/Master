@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Courses — EduMaster Hub</title>
+    
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="top-bar-fixed">
+    <a href="{% url 'home' %}" class="btn-action-float top-left-home" title="Back to Dashboard">
+        <i class="fa-solid fa-house"></i>
+    </a>
+
+    <button id="themeToggle" class="btn-action-float top-right-theme" title="Switch Theme">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+</div>
+
+<main class="showcase-wrapper">
+    
+    <div class="page-heading">
+        <h1>Available Pro Tracks</h1>
+        <p>Select a course to start your high-impact professional journey today.</p>
+    </div>
+
+    <div class="course-container">
+
+        {% for course in courses %}
+        <div class="course-box">
+            
+            <div class="thumb-wrapper">
+                {% if course.id in purchased_ids %}
+                    <span class="status-badge badge-owned"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
+                {% else %}
+                    <span class="status-badge badge-new">🚀 Pro Track</span>
+                {% endif %}
+
+                <img src="{{ course.course_image.url }}" alt="{{ course.course_name }}">
+            </div>
+
+            <div class="card-content">
+                
+                <div class="teacher-row">
+                    <div class="css-mentor-badge">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="t-name">By Prof. {{ course.teacher_name|default:"EduMaster Lead Faculty" }}</span>
+                </div>
+
+                <h2 class="c-title">
+                    {{ course.course_name }}
+                </h2>
+
+                <div class="course-meta-tags">
+                    <span class="rating-badge"><i class="fa-solid fa-star text-yellow"></i> {{ course.rating|default:"4.9" }}</span>
+                    <span class="contain-tag"><i class="fa-solid fa-layer-group"></i> {{ course.teacher_contain|default:"Complete Architecture" }}</span>
+                </div>
+
+                <p class="c-desc">{{ course.description }}</p>
+
+                <div class="card-footer">
+                    <div class="price-box">
+                        <span class="currency">₹</span>
+                        <span class="amount">{{ course.price }}</span>
+                    </div>
+
+                    <div class="action-box">
+                        {% if course.id in purchased_ids %}
+                            <a href="{% url 'course_access' course.id %}">
+                                <button class="action-btn open-btn">
+                                    <i class="fa-solid fa-circle-play"></i> Open Course
+                                </button>
+                            </a>
+                        {% else %}
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'payment2' course.id %}">
+                                    <button class="action-btn buy-btn">
+                                        <i class="fa-solid fa-cart-shopping"></i> Buy Course
+                                    </button>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login' %}"> 
+                                    <button class="action-btn login-btn">
+                                        <i class="fa-solid fa-right-to-bracket"></i> Login
+                                    </button>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</main>
+
+<script>
+    const themeBtn = document.getElementById('themeToggle');
+    const themeIcon = themeBtn.querySelector('i');
+
+    if(localStorage.getItem('edumaster_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+    });
+</script>
+
+</body>
+</html>

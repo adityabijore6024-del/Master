@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Keep Study & EduMaster</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+</head>
+<body>
+
+    <div class="main-container" id="mainContainer">
+        
+        <div class="form-container sign-up-container">
+            <form method="POST" action="{% url 'signup' %}">
+                {% csrf_token %}
+                <h1>Welcome to EduMaster</h1>
+                <p class="subtitle">Register now and start your learning journey</p>
+                
+                {% if error %}
+                <div class="error-msg">
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Enter your name" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-group">
+                    <input type="number" name="age" placeholder="Enter your age" required>
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="input-group">
+                    <input type="number" name="mobile" placeholder="Enter your mobile no." required>
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password1" placeholder="Create Password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password2" placeholder="Confirm Password" required>
+                    <i class="fas fa-check-double"></i>
+                </div>
+                
+                <button type="submit" name="signup_action">Continue To Payment</button>
+            </form>
+        </div>
+
+        <div class="form-container sign-in-container">
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h1>Login your Account</h1>
+                <p class="subtitle">Keep Study</p>
+
+                <div class="input-group">
+                    <input type="text" name="username3" placeholder="Username" required>
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="input-group">
+                    <input type="number" name="mobile3" placeholder="Mobile.no" required>
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password3" placeholder="Password" required>
+                    <i class="fas fa-key"></i>
+                </div>
+                
+                <button type="submit" name="login_action">Login</button>
+            </form>
+        </div>
+
+        <div class="overlay-container">
+            <div class="overlay">
+                
+                <div class="overlay-panel overlay-left">
+                    <h1>Already Registered?</h1>
+                    <p>Apni details ke sath wapas login karein aur apni padhai barkarar rakhein.</p>
+                    <button class="ghost" id="goToLogin">Tap to Slide & Login</button>
+                </div>
+                
+                <div class="overlay-panel overlay-right">
+                    <h1>New Student?</h1>
+                    <p>EduMaster par naye hain? Aaj hi register karein aur learning journey shuru karein.</p>
+                    <button class="ghost" id="goToSignup">Tap to Slide & Register</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const goToSignupBtn = document.getElementById('goToSignup');
+        const goToLoginBtn = document.getElementById('goToLogin');
+        const mainContainer = document.getElementById('mainContainer');
+
+        // Slide to Signup Form
+        goToSignupBtn.addEventListener('click', () => {
+            mainContainer.classList.add("right-panel-active");
+        });
+
+        // Slide back to Login Form
+        goToLoginBtn.addEventListener('click', () => {
+            mainContainer.classList.remove("right-panel-active");
+        });
+    </script>
+</body>
+</html>

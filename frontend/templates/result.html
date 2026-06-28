@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Telemetry — Scorecard | EduMaster</title>
+
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         TOP FIXED CORNER BUTTONS
+    ========================================================== -->
+    <div class="top-bar-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Go to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+
+        <!-- SYNCED THEME TOGGLE BUTTON -->
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- =========================================================
+         MAIN SCORECARD CANVAS
+    ========================================================== -->
+    <main class="result-container">
+
+        <div class="result-card">
+
+            <!-- HERO TROPHY HEADING -->
+            <header class="top-section">
+                <div class="trophy-wrapper">
+                    <i class="fa-solid fa-trophy trophy"></i>
+                </div>
+                <h1>Test Completed</h1>
+                <p>Here is your comprehensive examination telemetry report</p>
+            </header>
+
+            <!-- ====================================================
+                 UPDATED: GLOWING DYNAMIC PERCENTAGE GRAPH 
+                 ==================================================== -->
+            <div class="ring-wrapper">
+                <div class="score-circle-radial" style="background: conic-gradient(var(--accent-green) calc({{ attempt.percentage }} * 1%), var(--border) 0);">
+                    <div class="score-circle-inner">
+                        <span>{{ attempt.percentage }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOTAL SCORE BANNER -->
+            <div class="score-box">
+                <span class="score-label">Points Evaluated</span>
+                <h1 class="total-score-num">{{ attempt.score }}</h1>
+            </div>
+
+            <!-- 4x BENTO METRICS HUD -->
+            <div class="stats-grid">
+
+                <div class="stat-card correct">
+                    <div class="card-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-meta">
+                        <h3>{{ attempt.correct_answers }}</h3>
+                        <p>Correct</p>
+                    </div>
+                </div>
+
+                <div class="stat-card wrong">
+                    <div class="card-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div class="stat-meta">
+                        <h3>{{ attempt.wrong_answers }}</h3>
+                        <p>Wrong</p>
+                    </div>
+                </div>
+
+                <div class="stat-card skipped">
+                    <div class="card-icon"><i class="fa-solid fa-forward"></i></div>
+                    <div class="stat-meta">
+                        <h3>{{ attempt.skipped_answers }}</h3>
+                        <p>Skipped</p>
+                    </div>
+                </div>
+
+                <div class="stat-card time">
+                    <div class="card-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                    <div class="stat-meta">
+                        <h3>{{ attempt.time_taken_seconds }}s</h3>
+                        <p>Time Taken</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DYNAMIC DJANGO PERFORMANCE PILLS -->
+            <div class="performance">
+                {% if attempt.percentage >= 80 %}
+                    <span class="perf-pill excellent">
+                        <i class="fa-solid fa-rocket"></i> Excellent Performance 🚀
+                    </span>
+                {% elif attempt.percentage >= 60 %}
+                    <span class="perf-pill good">
+                        <i class="fa-solid fa-thumbs-up"></i> Good Performance 👍
+                    </span>
+                {% else %}
+                    <span class="perf-pill average">
+                        <i class="fa-solid fa-book-bookmark"></i> Keep Practicing 📚
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- FINAL NAVIGATION CTAS -->
+            <div class="buttons">
+                <a href="{% url 'start_test' attempt.test.id %}">
+                    <button class="retake-btn">
+                        <i class="fa-solid fa-rotate-right"></i> Retake Test
+                    </button>
+                </a>
+
+                <a href="{% url 'home' %}">
+                    <button class="home-btn-cta">
+                        <i class="fa-solid fa-house"></i> Back To Dashboard
+                    </button>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- THEME SYNC ENGINE -->
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

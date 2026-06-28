@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Helpdesk — EduMaster</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/contact_support.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         TOP FIXED HOME BUTTON (STRICT PLACEMENT)
+    ========================================================== -->
+    <div class="top-bar-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Back to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+    </div>
+
+    <!-- =========================================================
+         HERO BANNER
+    ========================================================== -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-sub"><i class="fa-solid fa-headset"></i> Student Care Portal</span>
+            <h1>How Can We Help You Today?</h1>
+            <p>Need assistance with video playback, billing ledgers, or AI tools? We are always here to support your journey.</p>
+        </div>
+    </section>
+
+    <main class="helpdesk-layout">
+
+        <!-- =========================================================
+             SECTION 1: DIRECT CONTACT CARDS
+        ========================================================== -->
+        <section class="support-cards">
+
+            <div class="card">
+                <div class="card-icon icon-indigo"><i class="fa-solid fa-envelope-open-text"></i></div>
+                <h3>Email Support</h3>
+                <p>adityabijore6024@gmail.com</p>
+                <a href="mailto:adityabijore6024@gmail.com" class="card-link">Send Mail <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon icon-emerald"><i class="fa-solid fa-phone-volume"></i></div>
+                <h3>Call Support</h3>
+                <p>+91 9584889727</p>
+                <a href="tel:9584889727" class="card-link">Call Line <i class="fa-solid fa-phone"></i></a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon icon-wa-green"><i class="fa-brands fa-whatsapp"></i></div>
+                <h3>WhatsApp Desk</h3>
+                <p>Instant Live Assistance</p>
+                <a href="https://wa.me/919584889727" target="_blank" class="card-link wa-link">Chat Now <i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon icon-rose"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h3>AI Support</h3>
+                <p>Instant AI Doubt Solver</p>
+                <a href="{% url 'home' %}#doubt" class="card-link">Ask AI <i class="fa-solid fa-bolt"></i></a>
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             SECTION 2: LIVE TELEMETRY STATS
+        ========================================================== -->
+        <section class="stats">
+
+            <div class="stat-box">
+                <h2>{{ total_tickets }}</h2>
+                <p><i class="fa-solid fa-ticket"></i> Total Tickets</p>
+            </div>
+
+            <div class="stat-box">
+                <h2 class="text-green">{{ solved_tickets }}</h2>
+                <p><i class="fa-solid fa-circle-check"></i> Solved</p>
+            </div>
+
+            <div class="stat-box">
+                <h2 class="text-amber">{{ pending_tickets }}</h2>
+                <p><i class="fa-solid fa-clock"></i> Pending</p>
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             SECTION 3: CREATE TICKET FORM
+        ========================================================== -->
+        <section class="ticket-section">
+
+            <div class="sec-heading">
+                <h2><i class="fa-solid fa-plus-circle text-primary"></i> Create Support Ticket</h2>
+                <p>Describe your technical or academic problem. Our engineering team responds within 4 hours.</p>
+            </div>
+
+            {% if success %}
+            <div class="success">
+                <i class="fa-solid fa-shield-check"></i> Ticket Submitted Successfully ✅
+            </div>
+            {% endif %}
+
+            <form method="POST" class="help-form">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="input-grp">
+                        <label>Issue Category</label>
+                        <select name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Course">📚 Course Problem</option>
+                            <option value="Payment">💳 Payment Problem</option>
+                            <option value="Login">🔐 Login Problem</option>
+                            <option value="Technical">⚙️ Technical Issue</option>
+                            <option value="AI">🤖 AI Doubt Solver</option>
+                        </select>
+                    </div>
+
+                    <div class="input-grp">
+                        <label>Brief Subject</label>
+                        <input type="text" name="subject" placeholder="e.g. Video 4 lagging on 1080p" required>
+                    </div>
+                </div>
+
+                <div class="input-grp full-w">
+                    <label>Detailed Description</label>
+                    <textarea name="message" rows="6" placeholder="Describe your issue, browser used, or error displayed..." required></textarea>
+                </div>
+
+                <div class="form-action">
+                    <button type="submit" class="btn-submit">
+                        <span>Submit Ticket</span> <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+
+        </section>
+
+
+        <!-- =========================================================
+             SECTION 4: TICKET HISTORY LEDGER
+        ========================================================== -->
+        <section class="history">
+
+            <div class="sec-heading">
+                <h2><i class="fa-solid fa-list-check text-primary"></i> My Support Tickets</h2>
+                <p>Review the historical status of your submitted inquiries.</p>
+            </div>
+
+            <div class="ticket-grid">
+
+                {% for ticket in tickets %}
+                <div class="ticket-card">
+
+                    <div class="ticket-top">
+                        <h3 class="t-subj">{{ ticket.subject }}</h3>
+                        
+                        <!-- DYNAMIC COLOR HOOK BASED ON STATUS TEXT -->
+                        <span class="status status-pill">
+                            {{ ticket.status }}
+                        </span>
+                    </div>
+
+                    <p class="t-msg">{{ ticket.message }}</p>
+
+                    <div class="ticket-bottom">
+                        <small><i class="fa-regular fa-clock"></i> {{ ticket.created_at }}</small>
+                        <span class="ticket-id">#TK-{{ ticket.id|default:"902" }}</span>
+                    </div>
+
+                </div>
+
+                {% empty %}
+                <div class="empty-tickets">
+                    <i class="fa-solid fa-folder-open empty-icon"></i>
+                    <h3>No Support Tickets Found</h3>
+                    <p>You haven't submitted any help inquiries yet. You're running smooth!</p>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             SECTION 5: INTERACTIVE FAQ ACCORDIONS
+        ========================================================== -->
+        <section class="faq">
+
+            <div class="sec-heading text-center">
+                <h2><i class="fa-solid fa-circle-question text-primary"></i> Frequently Asked Questions</h2>
+                <p>Quick answers to common student roadblocks.</p>
+            </div>
+
+            <div class="faq-list">
+
+                <div class="faq-box" onclick="toggleFaq(this)">
+                    <div class="faq-q">
+                        <h3>How can I buy a course?</h3>
+                        <i class="fa-solid fa-chevron-down faq-arrow"></i>
+                    </div>
+                    <p class="faq-a">Open the course catalog from your dashboard, select the professional track you wish to master, and click the 'Buy Course' button to complete payment via UPI or Cards.</p>
+                </div>
+
+                <div class="faq-box" onclick="toggleFaq(this)">
+                    <div class="faq-q">
+                        <h3>Payment completed but course not showing?</h3>
+                        <i class="fa-solid fa-chevron-down faq-arrow"></i>
+                    </div>
+                    <p class="faq-a">Occasionally bank Webhook confirmations take up to 10 minutes. If your course doesn't unlock automatically, create a 'Payment' ticket above with your UPI Transaction ID.</p>
+                </div>
+
+                <div class="faq-box" onclick="toggleFaq(this)">
+                    <div class="faq-q">
+                        <h3>Can I ask AI doubts?</h3>
+                        <i class="fa-solid fa-chevron-down faq-arrow"></i>
+                    </div>
+                    <p class="faq-a">Yes! Our Cortex-9™ AI Virtual Professor is integrated directly into your student suite. Click the 'Ask AI' card above to launch the interactive solver.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- =========================================================
+         FLOATING RIGHT STACK: THEME TOGGLE + WHATSAPP
+    ========================================================== -->
+    <div class="right-float-stack">
+        <button id="themeToggle" class="float-btn float-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <a href="https://wa.me/919584889727" target="_blank" class="float-btn float-wa" title="WhatsApp Support">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- INLINE THEME & FAQ ACCORDION ENGINE -->
+    <script>
+        // 1. Interactive FAQ Logic
+        function toggleFaq(elem) {
+            elem.classList.toggle("faq-open");
+        }
+
+        // 2. Theme Engine Sync
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

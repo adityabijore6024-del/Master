@@ -1,0 +1,394 @@
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0f19;
+            /* Premium Background Gradients */
+            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent),
+                              radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.15), transparent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .main-container {
+            background-color: #111827;
+            border-radius: 24px;
+            /* Advanced Neon/Shadow Effect */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 
+                        0 0 50px rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 850px;
+            max-width: 100%;
+            min-height: 550px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- FORM CONTAINERS --- */
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Login Side (Default Front) */
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .main-container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Signup Side (Hidden initially) */
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .main-container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: showForm 0.6s;
+        }
+
+        @keyframes showForm {
+            0%, 49.99% { opacity: 0; z-index: 1; }
+            50%, 100% { opacity: 1; z-index: 5; }
+        }
+
+        /* --- FORMS STYLING --- */
+        form {
+            background-color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 45px;
+            height: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 26px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        /* --- ADVANCED INPUT GROUPS --- */
+        .input-group {
+            position: relative;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            transition: 0.3s;
+        }
+
+        .input-group input {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 15px 12px 45px;
+            width: 100%;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        /* Chrome/Firefox internal input fix */
+        .input-group input:focus {
+            border-color: #6366f1;
+            background-color: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+        }
+
+        .input-group input:focus + i {
+            color: #6366f1;
+        }
+
+        /* --- BUTTONS --- */
+        button {
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px 45px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.ghost {
+            background: transparent;
+            border: 2px solid #ffffff;
+            margin-top: 20px;
+            box-shadow: none;
+        }
+
+        button.ghost:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* --- OVERLAY SLIDER --- */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+        }
+
+        .main-container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #ffffff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .main-container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .main-container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .main-container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        .overlay-panel p {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 22px;
+            margin: 15px 0 25px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Error Messages Styling */
+        .error-msg {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        /* ======================================================
+   MOBILE 3D FLIP CONCEPT (Replaces Old Mobile Code)
+   ====================================================== */
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 15px;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Main container ban gaya 3D Stage */
+    .main-container {
+        width: 100%;
+        max-width: 420px;
+        height: 580px;
+        min-height: 0;
+        perspective: 1000px; /* 3D depth activate karne ke liye */
+        display: block;
+    }
+
+    /* Dono forms ko ek hi jagah super-impose kar diya */
+    .form-container {
+        width: 100% !important;
+        height: calc(100% - 70px) !important; /* Niche 70px ki button patti ke liye jagah chhodi */
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1) !important;
+        backface-visibility: hidden !important; /* Jo side pichhe ghumi ho, use hide karo */
+        -webkit-backface-visibility: hidden !important;
+        border-radius: 24px 24px 0 0;
+    }
+
+    /* 1. FRONT FACE: Login Form */
+    .sign-in-container {
+        transform: rotateY(0deg) !important;
+        opacity: 1 !important;
+        z-index: 2;
+    }
+
+    /* 2. BACK FACE: Signup Form (Pehle se hi ulta ghumakar pichhe chhupaya hai) */
+    .sign-up-container {
+        transform: rotateY(180deg) !important;
+        opacity: 1 !important;
+        z-index: 1;
+    }
+
+    /* ---- JAB USER BUTTON DABAYE (The 3D Flip Trigger) ---- */
+    
+    /* Login ghum kar pichhe chala jayega */
+    .main-container.right-panel-active .sign-in-container {
+        transform: rotateY(-180deg) !important;
+    }
+
+    /* Signup pichhe se ghum kar saamne aa jayega */
+    .main-container.right-panel-active .sign-up-container {
+        transform: rotateY(0deg) !important;
+        z-index: 5;
+    }
+
+    /* --- BOTTOM FIXED TOGGLE BAR (Yeh flip nahi hogi, fix rahegi) --- */
+    .overlay-container {
+        position: absolute !important;
+        bottom: 0 !important;
+        top: auto !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 70px !important;
+        transform: none !important;
+        z-index: 100;
+        border-radius: 0 0 24px 24px;
+        overflow: hidden;
+    }
+
+    .overlay {
+        left: 0 !important;
+        width: 100% !important;
+        transform: none !important;
+    }
+
+    .overlay-panel {
+        width: 100% !important;
+        height: 100% !important;
+        padding: 0 20px !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        transform: none !important;
+    }
+
+    /* Faltu bade text mobile se hide karein */
+    .overlay-panel h1, .overlay-panel p { display: none !important; }
+
+    /* Purane button.ghost ko is se replace karein */
+    button.ghost {
+        margin: 0 auto !important;
+        padding: 10px 25px !important;
+        font-size: 0 !important; /* <-- MAGIC STEP: Purana text 0px ka hoke invisible ho gaya */
+        border-width: 1.5px !important;
+        width: 90% !important;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+    }
+
+    /* Login button ke andar naya 'Flip' text inject kiya */
+    #goToLogin::after {
+        content: "Tap to Flip & Login";
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Signup button ke andar naya 'Flip' text inject kiya */
+    #goToSignup::after {
+        content: "Tap to Flip & Register";
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Toggle bar buttons display logic */
+    .overlay-left { display: none !important; }
+    .main-container.right-panel-active .overlay-left { display: flex !important; }
+    .main-container.right-panel-active .overlay-right { display: none !important; }
+
+    /* Internal form spacing optimization for mobile */
+    form { padding: 20px 25px !important; justify-content: center; }
+    h1 { font-size: 22px !important; margin-bottom: 10px; }
+    .subtitle { margin-bottom: 15px; font-size: 12px; }
+    .input-group { margin: 6px 0; }
+    .input-group input { padding: 10px 15px 10px 40px; font-size: 13px; }
+    button { margin-top: 10px; padding: 12px; }
+}

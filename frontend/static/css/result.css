@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* LIGHT THEME SCORECARD TOKENS */
+    --bg-page: #f8fafc;
+    --card-bg: #ffffff;
+    --panel-bg: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-glow: rgba(79, 70, 229, 0.25);
+    --accent-green: #10b981;
+    --border: #e2e8f0;
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* DARK CYBER-SCORECARD TOKENS */
+body.dark-mode {
+    --bg-page: #090d16;
+    --card-bg: #111827;
+    --panel-bg: #161f30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    --primary-glow: rgba(99, 102, 241, 0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body { background-color: var(--bg-page); color: var(--text-main); transition: 0.35s ease; min-height: 100vh; padding: 40px 5% 80px; }
+
+/* =========================================================
+   1. TOP FLOATING BUTTONS
+========================================================= */
+.top-bar-fixed { position: fixed; top: 24px; left: 28px; right: 28px; display: flex; justify-content: space-between; z-index: 1000; pointer-events: none; }
+.btn-action-float { pointer-events: auto; width: 46px; height: 46px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none; cursor: pointer; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.nav-home { color: var(--primary); }
+.btn-action-float:hover { border-color: var(--primary); color: var(--primary); transform: scale(1.1) rotate(15deg); box-shadow: 0 0 18px var(--primary-glow); }
+
+/* =========================================================
+   2. MAIN CARD WRAPPER & TROPHY
+========================================================= */
+.result-container { max-width: 680px; margin: 20px auto 0; }
+
+.result-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 32px;
+    padding: 45px 36px; box-shadow: var(--card-shadow); text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 32px;
+    animation: fadeUp 0.8s ease forwards;
+}
+
+.trophy-wrapper { width: 80px; height: 80px; border-radius: 50%; background: rgba(245, 158, 11, 0.1); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 12px; box-shadow: 0 0 25px rgba(245, 158, 11, 0.2); animation: bounce 2s infinite ease-in-out; }
+.top-section h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 6px; }
+.top-section p { color: var(--text-muted); font-size: 1.02rem; }
+
+/* =========================================================
+   3. THE TRUE DYNAMIC GLOWING GRAPH (CONIC RADIAL)
+========================================================= */
+.ring-wrapper { padding: 10px; }
+
+/* This layer holds the gradient slice calculated by Django */
+.score-circle-radial {
+    width: 160px; height: 160px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.18);
+}
+
+/* Mask ring that hollows out the gradient center to form a graph bar */
+.score-circle-inner {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: var(--card-bg); display: flex; align-items: center; justify-content: center;
+    transition: background-color 0.35s ease;
+}
+
+.score-circle-radial:hover { transform: scale(1.06) rotate(4deg); box-shadow: 0 0 40px rgba(16, 185, 129, 0.35); }
+
+.score-circle-inner span { font-size: 2.4rem; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
+
+/* Total Points Box */
+.score-box { background: var(--panel-bg); border: 1px solid var(--border); padding: 14px 40px; border-radius: 20px; }
+.score-label { font-size: 0.78rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+.total-score-num { font-size: 2rem !important; font-weight: 800; color: var(--primary); }
+
+/* =========================================================
+   4. 4x METRICS BENTO HUD
+========================================================= */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
+
+.stat-card {
+    padding: 18px; border-radius: 20px; border: 1.5px solid var(--border);
+    display: flex; align-items: center; gap: 14px; text-align: left; background: var(--panel-bg);
+    transition: transform 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-4px); }
+
+.card-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+
+.stat-meta h3 { font-size: 1.35rem; font-weight: 800; line-height: 1.1; margin-bottom: 2px;}
+.stat-meta p { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+/* Color Specific Card Styling */
+.correct { border-color: rgba(16, 185, 129, 0.3); }
+.correct .card-icon { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.correct h3 { color: #10b981; }
+
+.wrong { border-color: rgba(239, 68, 68, 0.3); }
+.wrong .card-icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.wrong h3 { color: #ef4444; }
+
+.skipped { border-color: rgba(245, 158, 11, 0.3); }
+.skipped .card-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.skipped h3 { color: #f59e0b; }
+
+.time { border-color: rgba(6, 182, 212, 0.3); }
+.time .card-icon { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+.time h3 { color: #06b6d4; }
+
+/* =========================================================
+   5. PERFORMANCE PILLS & CTAS
+========================================================= */
+.performance { width: 100%; }
+
+.perf-pill {
+    display: block; width: 100%; padding: 14px; border-radius: 50px;
+    font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
+}
+.excellent { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1.5px solid rgba(16, 185, 129, 0.4); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
+.good      { background: rgba(79, 70, 229, 0.12);  color: #4f46e5; border: 1.5px solid rgba(79, 70, 229, 0.4); }
+.average   { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1.5px solid rgba(245, 158, 11, 0.4); }
+
+.buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; margin-top: 10px; }
+.buttons a { text-decoration: none; width: 100%; }
+
+.retake-btn, .home-btn-cta {
+    width: 100%; padding: 16px 20px; border-radius: 50px; border: none;
+    font-size: 0.96rem; font-weight: 800; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 8px; transition: 0.3s; color: #fff;
+}
+
+.retake-btn { background: var(--primary); box-shadow: 0 8px 20px var(--primary-glow); }
+.retake-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+.home-btn-cta { background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border); }
+.home-btn-cta:hover { border-color: var(--text-muted); transform: translateY(-2px); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* Mobile View */
+@media (max-width: 768px) {
+    body { padding: 80px 4% 60px; }
+    .top-bar-fixed { top: 16px; left: 16px; right: 16px; }
+    .result-card { padding: 32px 20px; border-radius: 24px; gap: 24px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+    .buttons { grid-template-columns: 1fr; }
+}

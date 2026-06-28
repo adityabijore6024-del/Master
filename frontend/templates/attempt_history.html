@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Ledger — My Test History | EduMaster</title>
+
+    <link rel="stylesheet" href="{% static 'css/attempt_history.css' %}">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+</head>
+<body>
+
+    <div class="top-bar-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Back to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <main class="history-container">
+
+        <header class="header">
+            <span class="hero-sub"><i class="fa-solid fa-clock-rotate-left"></i> Telemetry Archives</span>
+            <h1>My Test History</h1>
+            <p>Track your assessment performance, historical accuracy, and execution timelines over time.</p>
+        </header>
+
+        <section class="history-grid">
+
+            {% for attempt in attempts %}
+            <div class="history-card">
+
+                <div class="card-top">
+                    <div class="test-title-grp">
+                        <span class="attempt-label">Submitted Assessment</span>
+                        <h2>{{ attempt.test.title }}</h2>
+                    </div>
+
+                    <div class="score-badge">
+                        <span>{{ attempt.percentage }}%</span>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="m-pill pill-green">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>{{ attempt.correct_answers }} Correct</span>
+                    </div>
+
+                    <div class="m-pill pill-red">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <span>{{ attempt.wrong_answers }} Wrong</span>
+                    </div>
+
+                    <div class="m-pill pill-amber">
+                        <i class="fa-solid fa-forward"></i>
+                        <span>{{ attempt.skipped_answers }} Skipped</span>
+                    </div>
+
+                    <div class="m-pill pill-cyan">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        <span>{{ attempt.time_taken_seconds }}s Taken</span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="meta-info">
+                        <span><i class="fa-solid fa-trophy text-amber"></i> Points: <b>{{ attempt.score }}</b></span>
+                        <span><i class="fa-regular fa-calendar"></i> {{ attempt.submitted_at|date:"d M Y, H:i" }}</span>
+                    </div>
+
+                    <a href="{% url 'result_page' attempt.id %}">
+                        <button class="view-btn">
+                            <span>View Analysis</span> <i class="fa-solid fa-arrow-right-long"></i>
+                        </button>
+                    </a>
+                </div>
+
+            </div>
+
+            {% empty %}
+            <div class="empty-box">
+                <div class="empty-icon-pulse"><i class="fa-solid fa-file-circle-xmark"></i></div>
+                <h2>No Test Attempts Yet</h2>
+                <p>You haven't submitted any live examination sheets. Start a quiz inside your enrolled courses to build your historical performance telemetry.</p>
+                <a href="{% url 'home' %}" class="btn-empty-cta">Explore Enrolled Courses</a>
+            </div>
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

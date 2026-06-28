@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduMaster</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<header>
+
+    <div class="logo">
+        EduMaster
+    </div>
+
+    <nav>
+
+            <button id="themeToggle" class="theme-btn" title="Toggle Dark/Light Mode">
+    <i class="fa-solid fa-moon"></i>
+     </button>
+
+        <a href="{% url 'home' %}">Home</a>
+
+        <a href="{% url 'all_courses' %}">Courses</a>
+
+        <a href="{% url 'home' %}#teacher">Teachers</a>
+
+        <a href="#about">About</a>
+
+        <a href="{% url 'login' %}">
+            Login
+        </a>
+
+    </nav>
+
+</header>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Learn New Skills
+            With Expert Teachers
+        </h1>
+
+        <p>
+            Professional Courses,
+            AI Doubt Solver,
+            Lifetime Access &
+            Certified.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="{% url 'login' %}">
+                <button class="start-btn">
+                    Start Learning
+                </button>
+            </a>
+
+            <a href="{% url 'home' %}">
+                <button class="explore-btn">
+                    Explore Courses
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="about" id="about">
+
+    <div class="about-container">
+
+        <div class="about-text">
+
+            <h2>About EduMaster</h2>
+
+            <p>
+                EduMaster is a modern online learning platform
+                designed to help students learn skills from
+                expert teachers. Our mission is to provide
+                high-quality education, AI-powered doubt solving,
+                assignments, notes, and tests in one place.
+            </p>
+
+            <p>
+                Whether you are preparing for exams,
+                learning new technologies, or improving
+                your skills, EduMaster helps you achieve
+                your goals faster and smarter.
+            </p>
+
+            <div class="about-stats">
+
+                <div class="stat-box">
+                    <h3>500+</h3>
+                    <p>Students</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>50+</h3>
+                    <p>Courses</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>10+</h3>
+                    <p>Teachers</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3>24/7</h3>
+                    <p>AI Support</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="features">
+
+    <h2>
+        Why Choose Us
+    </h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-user-graduate"></i>
+
+            <h3>Expert Teachers</h3>
+
+            <p>
+                Learn from top educators.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-robot"></i>
+
+            <h3>AI Doubt Solver</h3>
+
+            <p>
+                Ask doubts anytime.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-certificate"></i>
+
+            <h3>Cheapest Price</h3>
+
+            <p>
+                 Price low  Eduction high.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <i class="fa-solid fa-infinity"></i>
+
+            <h3>Lifetime Access</h3>
+
+            <p>
+                Watch courses forever.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="cta">
+
+    <h2>
+        Ready To Start Learning?
+    </h2>
+
+    <p>
+        Join thousands of students today.
+    </p>
+
+    <a href="{% url 'login' %}">
+        <button>
+            Join Now
+        </button>
+    </a>
+
+</section>
+
+<footer>
+
+    <h3>
+        EduMaster
+    </h3>
+
+    <p>
+        © 2026 All Rights Reserved
+    </p>
+
+</footer>
+<script>
+    const themeBtn = document.getElementById('themeToggle');
+    const themeIcon = themeBtn.querySelector('i');
+
+    if (localStorage.getItem('edumaster_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+
+        if (isDark) {
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('edumaster_theme', 'dark');
+        } else {
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('edumaster_theme', 'light');
+        }
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Exam — {{ test.title }} | EduMaster</title>
+
+    <!-- Static CSS & FontAwesome -->
+    <link rel="stylesheet" href="{% static 'css/test_page.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         1. STICKY TOP EXAM HUD (CHIPKA HUA HEADER)
+    ========================================================== -->
+    <header class="exam-hud-top">
+        <div class="hud-left">
+            <a href="{% url 'test_list' test.course.id %}" class="btn-leave-exam" onclick="return confirm('Abort test? Your unsubmitted progress will be lost.')">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Leave test</span>
+            </a>
+            <div class="exam-brand">
+                <span class="pulse-red"></span>
+                <h2>{{ test.title }}</h2>
+            </div>
+        </div>
+
+        <div class="hud-right">
+            <!-- LIVE TIMER HUD BOX -->
+            <div class="timer-badge" id="timerBox">
+                <i class="fa-solid fa-stopwatch text-amber"></i>
+                <span id="timer">{{ test.duration_minutes }}:00</span>
+            </div>
+
+            <!-- SYNCED THEME TOGGLE BUTTON -->
+            <button id="themeToggle" class="btn-theme-exam" title="Switch Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- =========================================================
+         2. MAIN EXAMINATION QUESTION STREAM
+    ========================================================== -->
+    <main class="exam-workspace">
+
+        <form method="POST" action="{% url 'submit_test' test.id %}">
+            {% csrf_token %}
+
+            <!-- STRICTLY PRESERVED HIDDEN TELEMETRY INPUT -->
+            <input type="hidden" name="time_taken" id="time_taken">
+
+            <div class="questions-stream">
+                {% for question in questions %}
+                <div class="question-card" id="qCard_{{ forloop.counter }}">
+                    
+                    <div class="q-card-top">
+                        <span class="q-number">Question {{ forloop.counter }}</span>
+                        <span class="q-marks"><i class="fa-solid fa-star text-amber"></i> {{ question.marks }} Marks</span>
+                    </div>
+
+                    <h3 class="q-text">{{ question.question_text }}</h3>
+
+                    <!-- TYPE A: SINGLE CHOICE MCQ -->
+                    {% if question.question_type == "single" %}
+                        <div class="options-grid">
+                            {% for option in question.options.all %}
+                            <label class="option-box">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}">
+                                <span class="opt-indicator"></span>
+                                <span class="opt-text">{{ option.option_text }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- TYPE B: MULTIPLE CHOICE MCQ -->
+                    {% if question.question_type == "multiple" %}
+                        <div class="options-grid">
+                            {% for option in question.options.all %}
+                            <label class="option-box">
+                                <input
+                                    type="checkbox"
+                                    name="question_{{ question.id }}"
+                                    value="{{ option.id }}">
+
+                                <span class="opt-indicator"></span>
+                                <span class="opt-text">
+                                    {{ option.option_text }}
+                                </span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    <!-- TYPE C: INTEGER / NUMERICAL INPUT -->
+                    {% if question.question_type == "integer" %}
+                        <div class="integer-grp">
+                            <label class="int-label"><i class="fa-solid fa-keyboard"></i> Numerical Answer:</label>
+                            <input type="number" class="integer-input" name="question_{{ question.id }}" placeholder="Type integer value...">
+                        </div>
+                    {% endif %}
+
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- FINAL SUBMIT SECTION -->
+            <div class="submit-section">
+                <div class="submit-card">
+                    <div class="sub-info">
+                        <h3>Finished answering?</h3>
+                        <p>Double-check your integer values. Once submitted, your score telemetry is locked.</p>
+                    </div>
+                    <button type="submit" class="submit-btn" onclick="return confirm('Lock and submit your final examination sheet?')">
+                        <span>Submit Final Sheet</span> <i class="fa-solid fa-flag-checkered"></i>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </main>
+
+    <!-- =========================================================
+         3. STRICTLY PRESERVED JS TIMER & THEME ENGINE
+    ========================================================== -->
+    <script>
+        // --- YOUR EXACT TIMER & TELEMETRY LOGIC ---
+        let totalSeconds = {{ test.duration_minutes }} * 60;
+        let originalTime = totalSeconds;
+
+        const timer = document.getElementById("timer");
+        const timerBox = document.getElementById("timerBox");
+        const timeTakenInput = document.getElementById("time_taken");
+        const form = document.querySelector("form");
+
+        const interval = setInterval(function () {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            timer.innerHTML = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            totalSeconds--;
+
+            // UI Polish: Glows red when under 60 seconds
+            if (totalSeconds < 60) {
+                timerBox.classList.add("timer-danger");
+            }
+
+            if (totalSeconds < 0) {
+                clearInterval(interval);
+                timeTakenInput.value = originalTime;
+                alert("Time limit exhausted! Your exam paper is being auto-submitted.");
+                form.submit();
+            }
+        }, 1000);
+
+        form.addEventListener("submit", function () {
+            timeTakenInput.value = originalTime - totalSeconds;
+        });
+
+        // --- THEME ENGINE (Matches exact pichle pages ka key) ---
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

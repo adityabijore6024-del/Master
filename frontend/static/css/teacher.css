@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* LIGHT THEME TOKENS */
+    --bg-page: #f8fafc;
+    --card-bg: #ffffff;
+    --panel-bg: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-glow: rgba(79, 70, 229, 0.25);
+    --accent-green: #10b981;
+    --accent-orange: #f97316;
+    --border: #e2e8f0;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.18);
+}
+
+/* DARK CYBER-CATALOG TOKENS */
+body.dark-mode {
+    --bg-page: #090d16;
+    --card-bg: #111827;
+    --panel-bg: #161f30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+    --hover-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.35);
+    --primary-glow: rgba(99, 102, 241, 0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body { background-color: var(--bg-page); color: var(--text-main); transition: 0.35s ease; min-height: 100vh; padding: 40px 5% 90px; }
+
+/* =========================================================
+   1. FIXED CORNER NAVIGATION BUTTONS
+========================================================= */
+.top-bar-fixed { position: fixed; top: 24px; left: 28px; right: 28px; display: flex; justify-content: space-between; z-index: 1000; pointer-events: none; }
+.btn-action-float { pointer-events: auto; width: 46px; height: 46px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; text-decoration: none; cursor: pointer; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.top-left-home { color: var(--primary); }
+.btn-action-float:hover { border-color: var(--primary); color: var(--primary); transform: scale(1.1) rotate(12deg); box-shadow: 0 0 18px var(--primary-glow); }
+
+/* =========================================================
+   2. PAGE HEADING
+========================================================= */
+.showcase-wrapper { max-width: 1300px; margin: 30px auto 0; }
+.page-heading { text-align: center; max-width: 650px; margin: 0 auto 50px; animation: fadeDown 0.8s ease forwards; }
+.page-heading h1 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+.page-heading p { color: var(--text-muted); font-size: 1.05rem; }
+
+/* =========================================================
+   3. COURSES SHOWCASE GRID
+========================================================= */
+.course-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 32px; align-items: stretch; }
+
+.course-box {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 26px;
+    overflow: hidden; box-shadow: var(--card-shadow); display: flex; flex-direction: column;
+    justify-content: space-between; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    animation: fadeUp 0.8s ease forwards; position: relative;
+}
+
+.course-box:hover { transform: translateY(-8px); box-shadow: var(--hover-shadow); border-color: var(--primary); }
+
+/* STRICT THUMBNAIL CONTAINER FIX (Stops Excel image from breaking layout) */
+.thumb-wrapper { position: relative; width: 100%; height: 210px; overflow: hidden; background: var(--panel-bg); flex-shrink: 0; }
+.thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.course-box:hover .thumb-wrapper img { transform: scale(1.08); }
+
+.status-badge { position: absolute; top: 16px; left: 16px; z-index: 2; padding: 6px 14px; border-radius: 50px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; backdrop-filter: blur(8px); }
+.badge-owned { background: rgba(16, 185, 129, 0.95); color: #fff; }
+.badge-new   { background: rgba(79, 70, 229, 0.95); color: #fff; }
+
+.card-content { padding: 26px 24px 24px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+
+/* PURE CSS NEON MENTOR BADGE (REPLACED "FA" DABBA) */
+.teacher-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.css-mentor-badge { width: 36px; height: 36px; border-radius: 12px; background: rgba(79,70,229,0.12); border: 1.5px solid var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; box-shadow: 0 4px 12px var(--primary-glow); }
+.t-name { font-size: 0.86rem; font-weight: 800; color: var(--text-muted); }
+
+.c-title { font-size: 1.3rem; font-weight: 800; line-height: 1.35; margin-bottom: 12px; color: var(--text-main); }
+
+.course-meta-tags { display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); }
+.text-yellow { color: #f59e0b; margin-right: 4px; }
+.contain-tag i { color: var(--primary); margin-right: 4px; }
+
+.c-desc { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 26px; flex-grow: 1; }
+
+/* =========================================================
+   4. STRICT CARD FOOTER: PRICE & BUTTON BAGAL-BAGAL
+========================================================= */
+.card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 18px; border-top: 1px solid var(--border); gap: 15px; width: 100%;
+}
+
+.price-box { display: flex; align-items: baseline; flex-shrink: 0; }
+.currency { font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-right: 2px; }
+.amount { font-size: 1.65rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+
+/* STRICT BUTTON LOCK (Never gets squished) */
+.action-box { flex-grow: 1; max-width: 175px; }
+.action-box a { text-decoration: none; display: block; width: 100%; }
+
+.action-btn {
+    width: 100%; padding: 13px 18px; border-radius: 50px; border: none;
+    font-size: 0.9rem; font-weight: 800; cursor: pointer; color: #fff;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap;
+}
+
+.open-btn  { background: var(--accent-green); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28); }
+.open-btn:hover { background: #059669; transform: translateY(-2px); }
+
+.buy-btn   { background: var(--primary); box-shadow: 0 6px 18px var(--primary-glow); }
+.buy-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+.login-btn { background: var(--accent-orange); box-shadow: 0 6px 18px rgba(249, 115, 22, 0.28); }
+.login-btn:hover { background: #ea580c; transform: translateY(-2px); }
+
+.action-btn:active { transform: scale(0.96); }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(30px); }  to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile View */
+@media (max-width: 768px) {
+    body { padding: 75px 4% 60px; }
+    .top-bar-fixed { top: 16px; left: 16px; right: 16px; }
+    .course-container { grid-template-columns: 1fr; gap: 24px; }
+    .thumb-wrapper { height: 185px; }
+    .action-box { max-width: 160px; }
+    .action-btn { padding: 12px 14px; font-size: 0.85rem; }
+}

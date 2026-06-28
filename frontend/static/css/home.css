@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* LIGHT THEME TOKENS */
+    --bg-page: #f8fafc;
+    --card-bg: #ffffff;
+    --panel-bg: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-glow: rgba(79, 70, 229, 0.25);
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --border: #e2e8f0;
+    --nav-bg: rgba(255, 255, 255, 0.88);
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.18);
+}
+
+/* DARK CYBER-HUB TOKENS */
+body.dark-mode {
+    --bg-page: #090d16;
+    --card-bg: #111827;
+    --panel-bg: #161f30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --nav-bg: rgba(17, 24, 39, 0.88);
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    --hover-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.38);
+    --primary-glow: rgba(99, 102, 241, 0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body { background-color: var(--bg-page); color: var(--text-main); transition: 0.35s ease; min-height: 100vh; overflow-x: hidden; }
+
+/* =========================================================
+   1. STICKY FROSTED NAVBAR
+========================================================= */
+header {
+    position: sticky; top: 0; z-index: 1000; height: 76px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 5%; background: var(--nav-bg); backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+}
+
+.profile-photo img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; transition: 0.3s; }
+.profile-photo img:hover { transform: scale(1.08); box-shadow: 0 0 15px var(--primary-glow); }
+
+/* Live Search HUD */
+.search-bar { position: relative; flex-grow: 1; max-width: 450px; margin: 0 20px; }
+#searchInput {
+    width: 100%; padding: 12px 20px; border-radius: 50px; border: 1.5px solid var(--border);
+    background: var(--panel-bg); color: var(--text-main); font-size: 0.95rem; outline: none; transition: 0.3s;
+}
+#searchInput:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 0 0 4px var(--primary-glow); }
+
+#suggestions {
+    position: absolute; top: 54px; left: 0; right: 0; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--hover-shadow);
+    max-height: 300px; overflow-y: auto; z-index: 1001;
+}
+
+/* Navigation Right Menu */
+.right { display: flex; align-items: center; gap: 24px; }
+.right a { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.92rem; transition: 0.2s; }
+.right a:hover { color: var(--primary); transform: translateY(-2px); }
+
+.theme-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel-bg); color: var(--text-main); cursor: pointer; transition: 0.3s; font-size: 1.05rem; }
+.theme-btn:hover { border-color: var(--primary); color: var(--primary); transform: rotate(15deg); }
+
+.menu-btn { display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+
+/* =========================================================
+   2. HERO SLIDER ANIMATION ENGINE
+========================================================= */
+main { max-width: 1300px; margin: 30px auto; padding: 0 4%; }
+
+.slider { position: relative; width: 100%; border-radius: 28px; overflow: hidden; box-shadow: var(--card-shadow); margin-bottom: 40px; border: 1px solid var(--border); transition: all 0.4s ease; }
+.slides { display: flex; transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1); }
+
+.slide { min-width: 100%; position: relative; }
+.slide-card-wrap { width: 100%; height: 420px; overflow: hidden; position: relative; }
+.slide-card-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+
+/* 3D TILT EFFECT & GLOW ON HOVER */
+.slider:hover .slide-card-wrap img { transform: scale(1.05); }
+.slider:hover { box-shadow: 0 25px 50px -12px var(--primary-glow); border-color: var(--primary); transform: translateY(-4px); }
+
+.slide-gloss-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 40%); pointer-events: none; }
+
+.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; border: none; background: rgba(255,255,255,0.75); color: #0f172a; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: var(--card-shadow); z-index: 10; backdrop-filter: blur(4px); }
+.slider-btn:hover { background: var(--primary); color: #fff; transform: translateY(-50%) scale(1.1); }
+.prev { left: 20px; } .next { right: 20px; }
+
+.dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; }
+.dot.active { width: 30px; border-radius: 10px; background: var(--primary); }
+
+/* =========================================================
+   3. ASK DOUBT BANNER CTA
+========================================================= */
+.doubt { margin-bottom: 50px; text-align: center; }
+.doubt a { text-decoration: none; display: inline-block; }
+
+.doubt-cta-btn {
+    background: linear-gradient(135deg, var(--primary), #7c3aed); color: #fff;
+    border: none; padding: 18px 42px; border-radius: 50px; font-size: 1.1rem;
+    font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 10px 30px var(--primary-glow); transition: 0.3s ease;
+}
+.doubt-cta-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 15px 35px var(--primary-glow); }
+.pulse-icon { color: #38bdf8; }
+
+/* =========================================================
+   4. SEARCH RESULTS & TEACHER SHOWCASE (COURSE DNA)
+========================================================= */
+.result { width: 100%; margin-bottom: 50px; }
+
+.search-output-header, .sec-header-center { text-align: center; max-width: 650px; margin: 0 auto 35px; animation: fadeDown 0.6s ease forwards; }
+.search-badge, .hero-sub { font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px; background: var(--card-bg); padding: 6px 16px; border-radius: 50px; border: 1px solid var(--border); box-shadow: var(--card-shadow); margin-bottom: 10px; }
+.hero-sub { color: var(--accent-emerald); }
+
+.search-output-header h2, .sec-header-center h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 800; letter-spacing: -1px; color: var(--text-main); }
+
+.course-container, .teacher-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 32px; align-items: stretch; margin-bottom: 60px;
+}
+
+.course-box, .teacher-box {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 26px;
+    overflow: hidden; box-shadow: var(--card-shadow); display: flex; flex-direction: column;
+    justify-content: space-between; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative; animation: fadeUp 0.8s ease forwards;
+}
+
+.course-box:hover, .teacher-box:hover { transform: translateY(-8px); box-shadow: var(--hover-shadow); border-color: var(--primary); }
+
+.thumb-wrapper, .t-thumb-wrapper { position: relative; width: 100%; height: 210px; overflow: hidden; background: var(--panel-bg); flex-shrink: 0; }
+.thumb-wrapper img, .t-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.6s ease; }
+.course-box:hover img, .teacher-box:hover img { transform: scale(1.08); }
+
+.status-badge, .module-lead-badge { position: absolute; top: 16px; left: 16px; z-index: 2; padding: 6px 14px; border-radius: 50px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; backdrop-filter: blur(8px); }
+.badge-owned { background: rgba(16, 185, 129, 0.95); color: #fff; }
+.badge-new, .module-lead-badge { background: rgba(79, 70, 229, 0.95); color: #fff; }
+
+.card-content, .t-card-body { padding: 26px 24px 24px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+
+.teacher-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.css-mentor-badge { width: 36px; height: 36px; border-radius: 12px; background: rgba(79,70,229,0.12); border: 1.5px solid var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; box-shadow: 0 4px 12px var(--primary-glow); }
+.t-name, .t-faculty-name { font-size: 0.86rem; font-weight: 800; color: var(--text-muted); }
+
+.c-title, .t-card-body h3 { font-size: 1.3rem; font-weight: 800; line-height: 1.35; margin-bottom: 12px; color: var(--text-main); }
+
+.course-meta-tags, .t-meta-row { display: flex; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); padding: 8px 0; border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
+.text-yellow, .text-amber { color: #f59e0b; margin-right: 4px; }
+
+.c-desc { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 26px; flex-grow: 1; }
+
+/* Strict Flexbox Footer for Buttons */
+.card-footer, .btn-action-area { display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1px solid var(--border); gap: 15px; width: 100%; }
+
+.price-box { display: flex; align-items: baseline; flex-shrink: 0; }
+.currency { font-size: 1.1rem; font-weight: 800; color: #10b981; margin-right: 2px; }
+.amount { font-size: 1.65rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+
+.action-box, .btn-action-area a { flex-grow: 1; max-width: 175px; text-decoration: none; }
+.action-box a { width: 100%; text-decoration: none; display: block; }
+
+.action-btn, .explore-t-btn { width: 100%; padding: 13px 18px; border-radius: 50px; border: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; white-space: nowrap; }
+.open-btn { background: #10b981; box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28); }
+.buy-btn, .explore-t-btn { background: var(--primary); box-shadow: 0 6px 18px var(--primary-glow); }
+.login-btn { background: #f97316; box-shadow: 0 6px 18px rgba(249, 115, 22, 0.28); }
+
+.action-btn:hover, .explore-t-btn:hover { transform: translateY(-2px); opacity: 0.95; }
+.action-btn:active { transform: scale(0.96); }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(30px); }  to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================================
+   6. MOBILE VIEW HAMBURGER MENU
+========================================================= */
+@media (max-width: 850px) {
+    header { padding: 0 4%; }
+    .search-bar { max-width: 200px; margin: 0 10px; }
+    #searchInput { padding: 10px 14px; font-size: 0.85rem; }
+    .menu-btn { display: block; }
+    
+    .right {
+        position: fixed; top: 76px; right: -100%; width: 260px; height: calc(100vh - 76px);
+        background: var(--card-bg); flex-direction: column; align-items: flex-start;
+        padding: 30px; gap: 20px; box-shadow: -10px 0 25px rgba(0,0,0,0.1); border-left: 1px solid var(--border);
+        transition: right 0.35s ease; z-index: 999;
+    }
+    .right.show { right: 0; }
+    .right a { width: 100%; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .slide-card-wrap { height: 240px; }
+    .action-box { max-width: 150px; }
+    .action-btn { padding: 11px 12px; font-size: 0.82rem; }
+}

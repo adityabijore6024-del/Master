@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CORTEX-9™ | The Virtual Professor</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/doubt.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="cortex-nav">
+        <div class="nav-left">
+            <a href="{% url 'home' %}" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Exit Room</a>
+            <div class="brand-title">
+                <span class="logo-icon"><i class="fa-solid fa-microchip"></i></span>
+                <div>
+                    <h3>CORTEX-9™</h3>
+                    <p>Cognitive EdTech Solver v2.5</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="live-status">
+                <span class="pulse-dot"></span>
+                <span class="status-text">Persona: <b>'Sir'</b> Active</span>
+            </div>
+
+            <button id="themeToggle" class="btn-theme-cortex" title="Switch Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="workspace-grid">
+        
+        <section class="config-panel">
+            
+            <div class="panel-header">
+                <h2>Domain & Pedagogy</h2>
+                <p>Configure how Professor Cortex analyzes your doubt.</p>
+            </div>
+
+            <div class="config-group">
+                <label class="group-label"><i class="fa-solid fa-layer-group"></i> 1. Select Domain</label>
+                <div class="domain-tabs">
+                    <button class="domain-tab active" id="tab-academic" onclick="switchDomain('academic')">
+                        <i class="fa-solid fa-graduation-cap"></i> Academic Doubt
+                    </button>
+                    <button class="domain-tab" id="tab-career" onclick="switchDomain('career')">
+                        <i class="fa-solid fa-compass"></i> Non-Academic / Career
+                    </button>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label class="group-label"><i class="fa-solid fa-sliders"></i> 2. Teaching Tone (Pedagogy)</label>
+                <div class="tone-selector">
+                    <label class="tone-card">
+                        <input type="radio" name="pedagogy" value="standard" checked>
+                        <span>📐 Step-by-Step</span>
+                    </label>
+                    <label class="tone-card">
+                        <input type="radio" name="pedagogy" value="eli5">
+                        <span>👶 Explain like I'm 5</span>
+                    </label>
+                    <label class="tone-card">
+                        <input type="radio" name="pedagogy" value="socratic">
+                        <span>🧠 Socratic (Hint Only)</span>
+                    </label>
+                    <label class="tone-card">
+                        <input type="radio" name="pedagogy" value="hinglish">
+                        <span>🇮🇳 Hinglish Tuition</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label class="group-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Quick Prompt Starters</label>
+                <div class="quick-pills" id="pills-academic">
+                    <span onclick="injectPrompt('Explain the absolute core logic behind: ')">⚡ Core Logic</span>
+                    <span onclick="injectPrompt('Derive/Break down the formula for: ')">📐 Formula Breakdown</span>
+                    <span onclick="injectPrompt('Why does my code throw this error? Code: \n')">🐛 Debug Code</span>
+                    <span onclick="injectPrompt('Give me 3 practical exam questions for: ')">🎯 Practice MCQs</span>
+                </div>
+                <div class="quick-pills hidden" id="pills-career">
+                    <span onclick="injectPrompt('I have an exam in 20 days and 0 preparation. Give me a survival strategy: ')">🚨 20-Day Survival</span>
+                    <span onclick="injectPrompt('How do I build a roadmap to crack a 12 LPA job as a fresher in: ')">💰 12-LPA Roadmap</span>
+                    <span onclick="injectPrompt('I study for 2 hours but forget everything next morning. Help: ')">🧠 Memory Fix</span>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="solver-stage">
+            
+            <div class="input-card">
+                <textarea id="userDoubt" rows="5" placeholder="Paste your question, code, or type a concept... (e.g. 'Explain Calculus limits')"></textarea>
+                
+                <div class="input-actions">
+                    <div class="tools">
+                        <button class="btn-tool" onclick="attachFile()" title="Upload Question Paper/Image"><i class="fa-solid fa-paperclip"></i></button>
+                        <span class="word-counter" id="charCount">0 / 2500</span>
+                    </div>
+
+                    <button class="btn-trigger-ai" id="btnSubmit" onclick="triggerCortex()">
+                        <span>Ask Cortex Sir</span> <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="response-canvas hidden" id="responseCanvas">
+                <div class="canvas-topbar">
+                    <div class="ai-identity">
+                        <span class="avatar-sir"><i class="fa-solid fa-user-tie"></i></span>
+                        <div>
+                            <h4>Professor Cortex</h4>
+                            <span class="badge-difficulty" id="diffBadge">Analyzing Depth...</span>
+                        </div>
+                    </div>
+                    <div class="canvas-tools">
+                        <button class="btn-canvas-tool" onclick="copyAnswer()" title="Copy entire answer"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="answer-stream" id="aiOutput">
+                    </div>
+
+                <div class="followup-tray hidden" id="followUpTray">
+                    <p class="tray-label"><i class="fa-solid fa-share-nodes"></i> Smart Follow-ups:</p>
+                    <div class="follow-buttons">
+                        <button onclick="requestFollowUp('quiz')">❓ Quiz me on this answer</button>
+                        <button onclick="requestFollowUp('cheatsheet')">📄 Convert to Quick Notes</button>
+                        <button onclick="requestFollowUp('simplify')">🗣️ Still tough, simplify more</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+
+        let currentDomain = "academic";
+        const doubtInput = document.getElementById("userDoubt");
+        const charCountEl = document.getElementById("charCount");
+        const responseCanvas = document.getElementById("responseCanvas");
+        const aiOutput = document.getElementById("aiOutput");
+        const diffBadge = document.getElementById("diffBadge");
+        const followUpTray = document.getElementById("followUpTray");
+        let lastGeneratedAnswer = "";
+
+        // UI Handlers
+        doubtInput.addEventListener("input", () => charCountEl.innerText = `${doubtInput.value.length} / 2500`);
+
+        function switchDomain(domain) {
+            currentDomain = domain;
+            document.getElementById("tab-academic").classList.toggle("active", domain === "academic");
+            document.getElementById("tab-career").classList.toggle("active", domain === "career");
+            document.getElementById("pills-academic").classList.toggle("hidden", domain !== "academic");
+            document.getElementById("pills-career").classList.toggle("hidden", domain !== "career");
+            doubtInput.placeholder = domain === "academic" ? "Paste your question, code, or type a concept... (e.g. 'Explain Calculus limits')" : "Ask about interview fear, daily timetable, distraction, or salary scope...";
+        }
+
+        function injectPrompt(txt) {
+            doubtInput.value = txt;
+            doubtInput.focus();
+            charCountEl.innerText = `${doubtInput.value.length} / 2500`;
+        }
+
+        function attachFile() {
+            alert("CORTEX Engine Note: File upload hook ready. Wire this button to Django backend to parse PDFs/Images.");
+        }
+
+        async function triggerCortex(customPrompt = null) {
+            const userText = customPrompt || doubtInput.value.trim();
+            if (!userText) { alert("Please type a doubt first!"); return; }
+
+            const pedagogyMode = document.querySelector('input[name="pedagogy"]:checked').value;
+
+            responseCanvas.classList.remove("hidden");
+            followUpTray.classList.add("hidden");
+            aiOutput.innerHTML = `<div class="ai-skeleton"><div class="skel-line w-90"></div><div class="skel-line w-75"></div><div class="skel-line w-85"></div><div class="skel-line w-60"></div></div>`;
+            diffBadge.innerText = "Processing Logic...";
+            responseCanvas.scrollIntoView({ behavior: "smooth", block: "start" });
+
+            let systemPersona = "";
+            if (currentDomain === "academic") {
+                systemPersona = "You are an elite, highly esteemed professor named 'CORTEX-9'. You solve academic doubts.";
+                if (pedagogyMode === "eli5") systemPersona += " Explain using very fun, extremely simple real-world analogies suitable for a 10-year-old child.";
+                else if (pedagogyMode === "socratic") systemPersona += " DO NOT give the direct final answer! Give a brief conceptual hint, and ask a leading question to make the student solve it themselves.";
+                else if (pedagogyMode === "hinglish") systemPersona += " Explain using a very friendly, supportive Indian Hinglish tone (Hindi written in English alphabet mixed with technical English terms).";
+                else systemPersona += " Provide a crystal clear, highly structured, step-by-step academic breakdown.";
+            } else {
+                systemPersona = "You are an empathetic, highly realistic career and life mentor named 'CORTEX-9'. Give students actionable, mature, and highly motivating career roadmaps and psychological tips.";
+            }
+
+            const rawPayload = `${systemPersona}\n\nStudent Request: "${userText}"`;
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: rawPayload }] }] })
+                });
+
+                const json = await res.json();
+                if (json.error) throw new Error(json.error.message);
+
+                lastGeneratedAnswer = json.candidates[0].content.parts[0].text;
+
+                let formatted = lastGeneratedAnswer
+                    .replace(/\*\*(.*?)\*\*/g, '<span class="highlight-bold">$1</span>')
+                    .replace(/\*(.*?)\*/g, '<i>$1</i>')
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/\n/g, '<br>');
+
+                aiOutput.innerHTML = `<p>${formatted}</p>`;
+                diffBadge.innerText = currentDomain === "academic" ? "Domain: Academic" : "Domain: Mentorship";
+                followUpTray.classList.remove("hidden");
+
+            } catch (err) {
+                aiOutput.innerHTML = `<div class="error-banner"><i class="fa-solid fa-triangle-exclamation"></i> <b>Cortex System Error:</b> Failed to reach AI node. Did you paste your Gemini API key?<br><small>${err.message}</small></div>`;
+                diffBadge.innerText = "Offline";
+            }
+        }
+
+        function requestFollowUp(actionType) {
+            let contextPrompt = "";
+            if (actionType === "quiz") contextPrompt = `Based strictly on your previous answer:\n"${lastGeneratedAnswer}"\n\nAsk me ONE multiple choice question to test if I understood it correctly.`;
+            else if (actionType === "cheatsheet") contextPrompt = `Convert this entire explanation into a 4-bullet-point high-yield exam cheat sheet:\n"${lastGeneratedAnswer}"`;
+            else if (actionType === "simplify") contextPrompt = `I still didn't understand this explanation:\n"${lastGeneratedAnswer}"\n\nPlease break it down again using a completely different, much simpler story/analogy.`;
+            
+            triggerCortex(contextPrompt);
+        }
+
+        function copyAnswer() {
+            navigator.clipboard.writeText(aiOutput.innerText);
+            alert("Cortex Sir's solution copied to clipboard!");
+        }
+
+        /* -------------------------------------------------------------
+           THEME SYNC ENGINE (Matches exact dashboard key)
+        ------------------------------------------------------------- */
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

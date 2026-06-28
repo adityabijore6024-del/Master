@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* LIGHT THEME TOKENS */
+    --bg-page: #f8fafc;
+    --card-bg: #ffffff;
+    --panel-bg: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-glow: rgba(79, 70, 229, 0.22);
+    --border: #e2e8f0;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.15);
+}
+
+/* DARK CYBER-ANALYTICS TOKENS */
+body.dark-mode {
+    --bg-page: #090d16;
+    --card-bg: #111827;
+    --panel-bg: #161f30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+    --hover-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.32);
+    --primary-glow: rgba(99, 102, 241, 0.35);
+}
+
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    background-color: var(--bg-page); color: var(--text-main);
+    transition: background-color 0.35s ease, color 0.35s ease;
+    min-height: 100vh; padding: 40px 5% 90px;
+}
+
+/* =========================================================
+   1. FLOATING TOP CORNER BUTTONS
+========================================================= */
+.top-nav-fixed {
+    position: fixed; top: 24px; left: 28px; right: 28px;
+    display: flex; justify-content: space-between; z-index: 1000;
+    pointer-events: none;
+}
+
+.btn-action-float {
+    pointer-events: auto; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--border);
+    color: var(--text-main); display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem; text-decoration: none; cursor: pointer; box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-home { color: var(--primary); }
+
+.btn-action-float:hover {
+    border-color: var(--primary); color: var(--primary);
+    transform: scale(1.1) rotate(15deg); box-shadow: 0 0 18px var(--primary-glow);
+}
+
+/* =========================================================
+   2. DASHBOARD HEADING & BENTO GRID
+========================================================= */
+.dashboard { max-width: 1300px; margin: 30px auto 0; }
+
+.page-header { margin-bottom: 40px; animation: fadeDown 0.8s ease forwards; }
+.page-header h1 { font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.text-primary { color: var(--primary); }
+.page-header p { color: var(--text-muted); font-size: 1.05rem; }
+
+/* Bento Stats Grid */
+.stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; margin-bottom: 60px;
+}
+
+.stat-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 22px;
+    padding: 26px; display: flex; align-items: center; gap: 20px; box-shadow: var(--card-shadow);
+    transition: all 0.3s ease; animation: fadeUp 0.6s ease forwards;
+}
+
+.stat-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--hover-shadow); }
+
+.stat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+.icon-indigo  { background: rgba(79, 70, 229, 0.1); color: #4f46e5; }
+.icon-emerald { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.icon-amber   { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.icon-cyan    { background: rgba(6, 182, 212, 0.1);  color: #06b6d4; }
+.icon-rose    { background: rgba(244, 63, 94, 0.1);  color: #f43f5e; }
+
+.stat-card h2 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 4px; }
+.stat-card p { font-size: 0.84rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Wide Bento Box */
+.bento-wide { grid-column: 1 / -1; background: linear-gradient(135deg, var(--card-bg), var(--panel-bg)); border-color: rgba(79, 70, 229, 0.3); }
+.wide-label { font-size: 0.8rem; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-bottom: 4px;}
+.wide-title { font-size: 1.6rem !important; color: var(--text-main); }
+
+/* =========================================================
+   3. PURCHASED COURSES LIBRARY
+========================================================= */
+.section-title { margin-bottom: 26px; }
+.section-title h2 { font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+.mt-huge { margin-top: 80px; }
+
+.course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 30px; }
+
+.course-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px;
+    overflow: hidden; box-shadow: var(--card-shadow); display: flex; flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.course-card:hover { transform: translateY(-8px); box-shadow: var(--hover-shadow); border-color: var(--primary); }
+
+.thumb-wrapper { position: relative; height: 190px; overflow: hidden; }
+.thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.course-card:hover .thumb-wrapper img { transform: scale(1.08); }
+
+.badge {
+    position: absolute; top: 16px; left: 16px; background: rgba(16, 185, 129, 0.95);
+    color: #fff; padding: 6px 14px; border-radius: 50px; font-size: 0.78rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px; backdrop-filter: blur(6px);
+}
+
+.content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 20px; }
+.c-title { font-size: 1.25rem; font-weight: 800; line-height: 1.4; }
+.c-desc { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.card-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; border-top: 1px solid var(--border); }
+.purchase-date { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+
+.content a { text-decoration: none; }
+.btn-open {
+    background: var(--primary); color: #fff; border: none; padding: 10px 22px;
+    border-radius: 50px; font-weight: 800; font-size: 0.88rem; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 14px var(--primary-glow);
+}
+.course-card:hover .btn-open { background: var(--primary-hover); gap: 12px; }
+
+/* =========================================================
+   4. TEST HISTORY LEDGER (SMART PILLS)
+========================================================= */
+.test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 26px; }
+
+.test-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px;
+    padding: 26px; display: flex; flex-direction: column; gap: 18px; box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+.test-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: var(--hover-shadow); }
+
+.test-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
+.course-tag { font-size: 0.78rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+.test-title { font-size: 1.15rem; font-weight: 800; line-height: 1.3; }
+
+.score-badge {
+    background: rgba(79, 70, 229, 0.1); border: 1px solid var(--primary); color: var(--primary);
+    padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+}
+
+/* Metrics Row */
+.metrics-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.metric { padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.pill-green  { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.pill-red    { background: rgba(239, 68, 68, 0.12);  color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+.pill-yellow { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+.test-meta { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); padding-top: 12px; border-top: 1px dashed var(--border); }
+
+.test-action a { text-decoration: none; display: block; }
+.btn-result {
+    width: 100%; padding: 12px; border-radius: 14px; border: 1px solid var(--border);
+    background: var(--panel-bg); color: var(--text-main); font-weight: 800; font-size: 0.9rem;
+    cursor: pointer; transition: 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.test-card:hover .btn-result { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px var(--primary-glow); }
+
+/* Empty States */
+.empty-state { grid-column: 1 / -1; background: var(--card-bg); border: 2px dashed var(--border); border-radius: 28px; padding: 60px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.empty-icon { font-size: 3.5rem; color: var(--text-muted); opacity: 0.5; margin-bottom: 8px; }
+.empty-state h2 { font-size: 1.5rem; font-weight: 800; }
+.empty-state p { color: var(--text-muted); font-size: 0.95rem; max-width: 450px; }
+.btn-empty { margin-top: 10px; background: var(--primary); color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 14px var(--primary-glow); }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(20px); }  to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile View */
+@media (max-width: 768px) {
+    body { padding: 80px 4% 60px; }
+    .top-nav-fixed { top: 16px; left: 16px; right: 16px; }
+    .btn-action-float { width: 42px; height: 42px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+    .course-grid, .test-grid { grid-template-columns: 1fr; }
+    .stat-card { padding: 20px; }
+    .test-card-top { flex-direction: column; }
+    .score-badge { align-self: flex-start; }
+}

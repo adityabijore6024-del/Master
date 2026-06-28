@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments — {{ course.course_name }} | EduMaster</title>
+
+    <link rel="stylesheet" href="{% static 'css/test_list.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         TOP FIXED CORNER BUTTONS (STRICT PLACEMENT)
+    ========================================================== -->
+    <div class="top-bar-fixed">
+        <a href="{% url 'course_access' course.id %}" class="btn-action-float nav-lecture" title="Back to Classroom">
+            <i class="fa-solid fa-arrow-left"></i> <span>Go to lecture</span>
+        </a>
+
+        <!-- STRICT ADDITION: SYNCED THEME TOGGLE BUTTON -->
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- =========================================================
+         PAGE HERO HEADING
+    ========================================================== -->
+    <header class="page-header">
+        <div class="header-content">
+            <span class="hero-sub"><i class="fa-solid fa-stopwatch"></i> Examination Suite</span>
+            <h1>{{ course.course_name }} Tests</h1>
+            <p>Practice under real examination timers, improve your accuracy & track your progress.</p>
+        </div>
+    </header>
+
+    <!-- =========================================================
+         MAIN TESTS SHOWCASE GRID
+    ========================================================== -->
+    <main class="test-container">
+
+        {% for test in tests %}
+        <div class="test-card">
+
+            <!-- CARD TOP METADATA -->
+            <div class="test-top">
+                <span class="badge badge-unlimited">
+                    <i class="fa-solid fa-rotate text-emerald"></i> Unlimited Attempts
+                </span>
+                <span class="status-indicator">Active</span>
+            </div>
+
+            <!-- TEST TITLE -->
+            <h2 class="test-title">
+                <i class="fa-solid fa-graduation-cap text-primary"></i>
+                {{ test.title }}
+            </h2>
+
+            <!-- DESCRIPTION -->
+            <p class="test-desc">
+                {{ test.description }}
+            </p>
+
+            <!-- EXAM HUD (METRIC PILLS) -->
+            <div class="test-info">
+                <div class="info-pill pill-timer">
+                    <i class="fa-regular fa-clock"></i>
+                    <span><b>{{ test.duration_minutes }}</b> Mins</span>
+                </div>
+
+                <div class="info-pill pill-marks">
+                    <i class="fa-solid fa-award"></i>
+                    <span><b>{{ test.total_marks }}</b> Marks</span>
+                </div>
+            </div>
+
+            <!-- START TEST CTA -->
+            <div class="test-action">
+                <a href="{% url 'start_test' test.id %}">
+                    <button class="start-btn">
+                        <span>Start Test</span> <i class="fa-solid fa-play"></i>
+                    </button>
+                </a>
+            </div>
+
+        </div>
+
+        {% empty %}
+        <!-- EMPTY STATE WARNING -->
+        <div class="empty-box">
+            <div class="empty-icon-pulse"><i class="fa-solid fa-clipboard-question"></i></div>
+            <h2>No Tests Available Yet</h2>
+            <p>The instructor has not published any live quizzes for this module. Please check back later or return to video sessions.</p>
+        </div>
+        {% endfor %}
+
+    </main>
+
+    <!-- THEME SYNC ENGINE (Matches exact dashboard key) -->
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning Activity — EduMaster</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/activity.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="top-nav-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Go to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <main class="dashboard">
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-chart-line text-primary"></i> My Learning Hub</h1>
+            <p>Track your investments, course completion trajectory, and testing accuracy.</p>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon icon-indigo"><i class="fa-solid fa-book-bookmark"></i></div>
+                <div>
+                    <h2>{{ total_courses }}</h2>
+                    <p>Courses Owned</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-emerald"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div>
+                    <h2>₹{{ total_spent }}</h2>
+                    <p>Total Investment</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-amber"><i class="fa-solid fa-pen-clip"></i></div>
+                <div>
+                    <h2>{{ total_attempts }}</h2>
+                    <p>Tests Attempted</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-cyan"><i class="fa-solid fa-crosshairs"></i></div>
+                <div>
+                    <h2>{{ avg_percentage }}%</h2>
+                    <p>Average Accuracy</p>
+                </div>
+            </div>
+
+            {% if last_purchase %}
+            <div class="stat-card bento-wide">
+                <div class="stat-icon icon-rose"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="wide-content">
+                    <p class="wide-label">Most Recent Enrollment:</p>
+                    <h2 class="wide-title">{{ last_purchase.course.course_name }}</h2>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="section-title">
+            <h2><i class="fa-solid fa-folder-open text-primary"></i> Active Library</h2>
+        </div>
+
+        <div class="course-grid">
+
+            {% for item in purchases %}
+            <div class="course-card">
+
+                <div class="thumb-wrapper">
+                    <span class="badge"><i class="fa-solid fa-shield-check"></i> Owned</span>
+                    <img src="{{ item.course.course_image.url }}" alt="course">
+                </div>
+
+                <div class="content">
+                    <h2 class="c-title">{{ item.course.course_name }}</h2>
+                    <p class="c-desc">{{ item.course.description }}</p>
+
+                    <div class="card-bottom">
+                        <div class="purchase-date">
+                            <i class="fa-regular fa-calendar"></i> {{ item.purchased_at|date:"d M Y" }}
+                        </div>
+
+                        <a href="{% url 'course_access' item.course.id %}">
+                            <button class="btn-open">
+                                <span>Open Track</span> <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-box-open empty-icon"></i>
+                <h2>No Courses Purchased Yet</h2>
+                <p>Explore the teacher showcase catalog to unlock professional video curriculums.</p>
+                <a href="{% url 'home' %}#teacher" class="btn-empty">Explore Catalog</a>
+            </div>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="section-title mt-huge">
+            <h2><i class="fa-solid fa-spell-check text-primary"></i> Assessment Ledger</h2>
+        </div>
+
+        <div class="test-grid">
+
+            {% for attempt in attempts %}
+            <div class="test-card">
+
+                <div class="test-card-top">
+                    <div>
+                        <span class="course-tag"><i class="fa-solid fa-tag"></i> {{ attempt.test.course.course_name }}</span>
+                        <h3 class="test-title">{{ attempt.test.title }}</h3>
+                    </div>
+                    <div class="score-badge">
+                        <span>{{ attempt.percentage }}%</span>
+                    </div>
+                </div>
+
+                <div class="metrics-row">
+                    <span class="metric pill-green"><i class="fa-solid fa-check"></i> {{ attempt.correct_answers }} Correct</span>
+                    <span class="metric pill-red"><i class="fa-solid fa-xmark"></i> {{ attempt.wrong_answers }} Wrong</span>
+                    <span class="metric pill-yellow"><i class="fa-solid fa-minus"></i> {{ attempt.skipped_answers }} Skipped</span>
+                </div>
+
+                <div class="test-meta">
+                    <span><i class="fa-solid fa-stopwatch"></i> {{ attempt.time_taken_seconds }}s taken</span>
+                    <span><i class="fa-regular fa-clock"></i> {{ attempt.submitted_at|date:"d M Y, H:i" }}</span>
+                </div>
+
+                <div class="test-action">
+                    <a href="{% url 'result_page' attempt.id %}">
+                        <button class="btn-result">View Deep Analysis <i class="fa-solid fa-chart-pie"></i></button>
+                    </a>
+                </div>
+
+            </div>
+
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-file-circle-question empty-icon"></i>
+                <h2>No Test Records Found</h2>
+                <p>Attempt practice quizzes inside your enrolled courses to generate performance telemetry.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </main>
+
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EduMaster — Student Hub</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="profile-photo">
+    {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}">
+            {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" alt="Profile">
+            {% else %}
+                <img src="{% static 'images/default-profile.png' %}" alt="Default">
+            {% endif %}
+        </a>
+    {% else %}
+        <a href="#" onclick="showLoginPopup(); return false;">
+            <img src="{% static 'images/default-profile.png' %}" alt="Login">
+        </a>
+    {% endif %}
+    </div>
+
+     <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search Course or Test..." autocomplete="off">
+        <div id="suggestions"></div>
+    </div>
+
+     <div class="right">
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">Profile</a>
+        {% else %}
+            <a href="#" onclick="showLoginPopup(); return false;">Profile</a>
+        {% endif %}
+
+        <a href="#teacher">Course</a>
+        <a href="{% url 'doubt' %}">Ask Doubt</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'activity' %}">Activity</a>
+        {% else %}
+            <a href="#" onclick="showLoginPopup(); return false;">Activity</a>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'contact_support' %}">Contact & Support</a>
+        {% else %}
+            <a href="#" onclick="showSupportPopup(); return false;">Contact & Support</a>
+        {% endif %}
+
+        <button id="themeToggle" class="theme-btn" title="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <button class="menu-btn">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+    </button>
+</header>
+
+<main>
+    <div class="slider">
+        <div class="slides" id="slides">
+            {% for slide in slides %}
+            <div class="slide">
+                <div class="slide-card-wrap">
+                    <a href="#{{ slide.section_id }}">
+                        <img src="{{ slide.image.url }}" alt="Hero Slide">
+                        <div class="slide-gloss-overlay"></div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button class="slider-btn prev" onclick="prevSlide()">&#10094;</button>
+        <button class="slider-btn next" onclick="nextSlide()">&#10095;</button>
+        <div class="dots" id="dots"></div>
+    </div>
+     
+    <div class="doubt" id="doubt">
+        <a href="{% url 'doubt' %}">
+            <button class="doubt-cta-btn">
+                <i class="fa-solid fa-robot pulse-icon"></i> Ask Cortex AI Doubt
+            </button>
+         </a>
+    </div>
+    
+    <div class="result" id="searchResults">
+        {% if courses %}
+            <div class="search-output-header">
+                <span class="search-badge"><i class="fa-solid fa-magnifying-glass"></i> Search Output</span>
+                <h2>Found Curated Tracks For Your Search</h2>
+            </div>
+
+            <div class="course-container">
+                {% for course in courses %}
+                <div class="course-box">
+                    
+                    <div class="thumb-wrapper">
+                        {% if course.id in purchased_ids %}
+                            <span class="status-badge badge-owned"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
+                        {% else %}
+                            <span class="status-badge badge-new">🚀 Pro Track</span>
+                        {% endif %}
+
+                        <img src="{{ course.course_image.url }}" alt="{{ course.course_name }}">
+                    </div>
+
+                    <div class="card-content">
+                        
+                        <div class="teacher-row">
+                            <div class="css-mentor-badge">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <span class="t-name">By Prof. {{ course.teacher_name|default:"EduMaster Lead Faculty" }}</span>
+                        </div>
+
+                        <h2 class="c-title">{{ course.course_name }}</h2>
+
+                        <div class="course-meta-tags">
+                            <span class="rating-badge"><i class="fa-solid fa-star text-yellow"></i> {{ course.rating|default:"4.9" }}</span>
+                            <span class="contain-tag"><i class="fa-solid fa-layer-group"></i> {{ course.teacher_contain|default:"Complete Architecture" }}</span>
+                        </div>
+
+                        <p class="c-desc">{{ course.description }}</p>
+
+                        <div class="card-footer">
+                            <div class="price-box">
+                                <span class="currency">₹</span>
+                                <span class="amount">{{ course.price }}</span>
+                            </div>
+
+                            <div class="action-box">
+                                {% if course.id in purchased_ids %}
+                                    <a href="{% url 'course_access' course.id %}">
+                                        <button class="action-btn open-btn">
+                                            <i class="fa-solid fa-circle-play"></i> Open Course
+                                        </button>
+                                    </a>
+                                {% else %}
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'payment2' course.id %}">
+                                            <button class="action-btn buy-btn">
+                                                <i class="fa-solid fa-cart-shopping"></i> Buy Course
+                                            </button>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'login' %}"> 
+                                            <button class="action-btn login-btn">
+                                                <i class="fa-solid fa-right-to-bracket"></i> Login
+                                            </button>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+     <div class="teach" id="teacher">
+        <div class="sec-header-center">
+            <span class="hero-sub"><i class="fa-solid fa-chalkboard-user"></i> Master Mentors</span>
+            <h2>Explore Curated Tracks By Experts</h2>
+        </div>
+
+        <div class="teacher-grid">
+            {% for data in teacher %}
+            <div class="teacher-box" id="{{data.name}}">
+                
+                <div class="t-thumb-wrapper">
+                    <span class="module-lead-badge"><i class="fa-solid fa-check-double"></i> Lead Faculty</span>
+                    {% if data.image %}
+                        <img src="{{ data.image.url }}" alt="{{ data.name }}">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" alt="Default Teacher">
+                    {% endif %}
+                </div>
+
+                <div class="t-card-body">
+                    <span class="t-faculty-name"><i class="fa-solid fa-user-tie text-primary"></i> Prof. {{ data.name|default:"Lead Mentor" }}</span>
+                    
+                    <h3>{{data.contain}} ram ram</h3>
+
+                    <div class="t-meta-row">
+                        <span class="rating-badge">
+                            <i class="fa-solid fa-star text-amber"></i> {{ data.rating|default:"4.9" }} <small>(1.2k+)</small>
+                        </span>
+                        <span class="verified-tag">HD Modules</span>
+                    </div>
+
+                    <div class="btn-action-area">
+                        <a href="{% url 'teacher_courses' data.id %}">
+                            <button class="explore-t-btn">
+                                <span>Explore Track</span> <i class="fa-solid fa-arrow-right-long"></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // 1. AAPKA UPDATED FETCH SCRIPT (PROPER STYLED CARDS INJECTED)
+    const input = document.getElementById("searchInput");
+
+    input.addEventListener("keyup", function () {
+        let query = this.value;
+
+        if (query.trim().length < 1) {
+            document.getElementById("searchResults").innerHTML = "";
+            return;
+        }
+
+        fetch(`/live-search/?q=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            let html = `<div class="search-output-header"><span class="search-badge"><i class="fa-solid fa-bolt"></i> Instant Telemetry Output</span><h2>Live Matches For "${query}"</h2></div><div class="course-container">`;
+
+            // Courses
+            if (data.courses && data.courses.length > 0) {
+                data.courses.forEach(course => {
+                    html += `
+                    <div class="course-box">
+                        <div class="thumb-wrapper">
+                            <span class="status-badge badge-new">🚀 Pro Track</span>
+                            <img src="${course.course_image || '{% static "images/default-profile.png" %}'}" alt="Course">
+                        </div>
+                        <div class="card-content">
+                            <div class="teacher-row">
+                                <div class="css-mentor-badge"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <span class="t-name">Prof. ${course.teacher_name || 'Lead Faculty'}</span>
+                            </div>
+                            <h2 class="c-title">${course.course_name}</h2>
+                            <p class="c-desc">${course.description}</p>
+                            <div class="card-footer">
+                                <div class="price-box"><span class="currency">₹</span><span class="amount">${course.price}</span></div>
+                                <div class="action-box"><a href="/payment2/${course.id || ''}/"><button class="action-btn buy-btn">Buy Now</button></a></div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            // Tests
+            if (data.tests && data.tests.length > 0) {
+                data.tests.forEach(test => {
+                    html += `
+                    <div class="course-box">
+                        <div class="thumb-wrapper" style="background:#1e293b; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-file-signature" style="font-size:3.5rem; color:#f59e0b;"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="status-badge" style="background:#f59e0b; color:#000;">📝 Practice Exam</span>
+                            <h2 class="c-title">${test.title}</h2>
+                            <p class="c-desc">Timed examination paper with instant automated evaluation telemetry.</p>
+                            <div class="card-footer" style="justify-content:flex-end;">
+                                <div class="action-box"><a href=""><button class="action-btn login-btn">Start Test</button></a></div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            document.getElementById("searchResults").innerHTML = html;
+        });
+    });
+
+    /* Mobile-button- Script */ 
+    const menuBtn = document.querySelector(".menu-btn");
+    const menu = document.querySelector(".right");
+    
+    menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("show");
+    });
+
+    window.addEventListener("click", (e) => {
+        if (menu.classList.contains("show") && !menu.contains(e.target)) {
+            menu.classList.remove("show");
+        }
+    });
+
+    /* Image-Slider */
+    const slides = document.getElementById("slides");
+    const total = slides.children.length;
+    const dotsContainer = document.getElementById("dots");
+    let index = 0;
+    
+    for(let i=0;i<total;i++){
+        let dot = document.createElement("span");
+        dot.classList.add("dot");
+        if(i===0) dot.classList.add("active");
+        dot.onclick = () => { index = i; updateSlider(); }
+        dotsContainer.appendChild(dot);
+    }
+    
+    function updateSlider(){
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        document.querySelectorAll(".dot").forEach(dot => dot.classList.remove("active"));
+        document.querySelectorAll(".dot")[index].classList.add("active");
+    }
+    
+    function nextSlide(){ index = (index + 1) % total; updateSlider(); }
+    function prevSlide(){ index = (index - 1 + total) % total; updateSlider(); }
+    
+    let autoSlide = setInterval(nextSlide, 4500);
+    
+    document.querySelector(".slider").addEventListener("mouseenter",() => clearInterval(autoSlide));
+    document.querySelector(".slider").addEventListener("mouseleave",() => autoSlide = setInterval(nextSlide, 4500));
+
+    // Popups
+    function showLoginPopup(){
+        Swal.fire({
+            icon: "warning",
+            title: "Login Required",
+            html: `<b>Please login first to access this suite.</b><br><br>Buy courses, watch lectures, attempt tests and use student telemetry features.`,
+            showCancelButton: true,
+            confirmButtonText: "Login Now",
+            cancelButtonText: "Close",
+            confirmButtonColor: "#4f46e5",
+            cancelButtonColor: "#64748b",
+            background: document.body.classList.contains('dark-mode') ? "#111827" : "#ffffff",
+            color: document.body.classList.contains('dark-mode') ? "#f8fafc" : "#0f172a"
+        }).then((result) => {
+            if(result.isConfirmed) window.location.href = "{% url 'login' %}";
+        });
+    }
+
+    function showSupportPopup(){
+        Swal.fire({
+            icon: "info",
+            title: "Support Desk",
+            html: `<b>Please login to submit tracking tickets.</b><br><br>You can also contact our team directly via WhatsApp.`,
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "🔐 Login",
+            denyButtonText: "💬 WhatsApp",
+            cancelButtonText: "Close",
+            confirmButtonColor: "#4f46e5",
+            denyButtonColor: "#25D366",
+            cancelButtonColor: "#64748b",
+            background: document.body.classList.contains('dark-mode') ? "#111827" : "#ffffff",
+            color: document.body.classList.contains('dark-mode') ? "#f8fafc" : "#0f172a"
+        }).then((result) => {
+            if(result.isConfirmed) window.location.href = "{% url 'login' %}";
+            else if(result.isDenied) window.open("https://wa.me/919584889727?text=Hello%20EduMaster%20Support", "_blank");
+        });
+    }
+
+    /* THEME ENGINE */
+    const themeBtn = document.getElementById('themeToggle');
+    const themeIcon = themeBtn.querySelector('i');
+
+    if(localStorage.getItem('edumaster_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+    });
+</script>
+</body>
+</html>

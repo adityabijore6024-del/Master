@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — EduMaster</title>
+    
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<a href="{% url 'home' %}" class="top-left-home" title="Go to Dashboard">
+    <i class="fa-solid fa-house"></i>
+</a>
+
+<div class="top-right-actions">
+    <button id="themeToggle" class="nav-icon-btn" title="Switch Theme">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <a href="#" onclick="confirmLogout('{% url 'logout' %}'); return false;" class="logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+</div>
+
+
+<div class="profile-page">
+
+    {% if messages %}
+    <div class="message-box" style="display:none;">
+        {% for message in messages %}
+        <script>
+            Swal.fire({
+                icon: "{{ message.tags|default:'success' }}",
+                title: "{{ message|escapejs }}",
+                showConfirmButton: false,
+                timer: 2600,
+                timerProgressBar: true
+            });
+        </script>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <div class="profile-card">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="profile-image">
+                <div class="avatar-wrapper">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Profile" id="previewImg">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" alt="Default" id="previewImg">
+                    {% endif %}
+
+                    <label for="id_profile_image" class="camera-badge-icon" title="Upload new photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </label>
+                </div>
+
+                <input type="file" name="profile_image" id="id_profile_image" accept="image/*" hidden onchange="instantPreview(this)">
+            </div>
+
+
+            <div class="input-box">
+                <label>Username</label>
+                <input type="text" value="{{ request.user.username }}" readonly>
+            </div>
+
+            <div class="input-box">
+                <label>Email</label>
+                <input type="email" value="{{ request.user.email }}" readonly>
+            </div>
+
+            <div class="input-box">
+                <label>Phone Number</label>
+                <input type="text" name="phone" value="{{ profile.phone }}">
+            </div>
+
+            <div class="input-box">
+                <label>Age</label>
+                <input type="number" name="age" value="{{ profile.age }}">
+            </div>
+
+            <div class="input-box">
+                <label>Gender</label>
+                <select name="gender">
+                    <option value="Male" {% if profile.gender == "Male" %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if profile.gender == "Female" %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if profile.gender == "Other" %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label>City</label>
+                <input type="text" name="city" value="{{ profile.city }}">
+            </div>
+
+            <div class="input-box">
+                <label>Instagram</label>
+                <input type="text" name="instagram" value="{{ profile.instagram }}">
+            </div>
+
+            <div class="input-box">
+                <label>GitHub</label>
+                <input type="text" name="github" value="{{ profile.github }}">
+            </div>
+
+            <div class="input-box bio-box">
+                <label>Hobbies</label>
+                <input type="text" name="hobbies" value="{{ profile.hobbies }}">
+            </div>
+
+            <div class="input-box bio-box">
+                <label>Bio</label>
+                <textarea name="bio" rows="5">{{ profile.bio }}</textarea>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="save-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Update Profile
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="profile-card">
+        <h2 class="section-title"><i class="fa-solid fa-envelope"></i> Change Email</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="change_email" value="1">
+
+            <div class="input-box bio-box">
+                <label>New Email</label>
+                <input type="email" name="new_email" placeholder="Enter New Email" required>
+            </div>
+
+            <div class="input-box bio-box">
+                <label>Current Password</label>
+                <input type="password" name="email_password" placeholder="Enter Current Password" required>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="email-btn">
+                    <i class="fa-solid fa-envelope-circle-check"></i> Update Email
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="profile-card">
+        <h2 class="section-title"><i class="fa-solid fa-lock"></i> Change Password</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="change_password" value="1">
+
+            <div class="input-box bio-box">
+                <label>Current Password</label>
+                <input type="password" name="old_password" placeholder="Current Password" required>
+            </div>
+
+            <div class="input-box">
+                <label>New Password</label>
+                <input type="password" name="new_password" placeholder="New Password" required>
+            </div>
+
+            <div class="input-box">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="password-btn">
+                    <i class="fa-solid fa-key"></i> Change Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // 1. Theme Sync Engine (Exact same key as Dashboard)
+    const themeBtn = document.getElementById('themeToggle');
+    const themeIcon = themeBtn.querySelector('i');
+
+    if(localStorage.getItem('edumaster_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+    });
+
+    // 2. SweetAlert Logout Trigger
+    function confirmLogout(targetUrl) {
+        Swal.fire({
+            title: 'Log out of EduMaster?',
+            text: "You will need to enter your password to sign back in.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, Log Out',
+            background: document.body.classList.contains('dark-mode') ? '#111827' : '#ffffff',
+            color: document.body.classList.contains('dark-mode') ? '#f8fafc' : '#0f172a'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = targetUrl;
+            }
+        });
+    }
+
+    // 3. Camera Icon Instant Photo Changer
+    function instantPreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>
+</html>

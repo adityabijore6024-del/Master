@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Catalog — EduMaster</title>
+    
+    <!-- Static CSS & FontAwesome -->
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         TOP FIXED CORNER BUTTONS (STRICT PLACEMENT)
+    ========================================================== -->
+    <div class="top-bar-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Back to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+
+        <!-- SYNCED THEME TOGGLE BUTTON -->
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- =========================================================
+         MAIN SHOWCASE CATALOG
+    ========================================================== -->
+    <main class="catalog-workspace">
+
+        <div class="page-heading">
+            <h1><i class="fa-solid fa-layer-group text-primary"></i> Explore Curated Tracks</h1>
+            <p>Master high-demand skills with our industry-standard video curriculums.</p>
+        </div>
+
+        <!-- THE DJANGO LOOP CONTAINER -->
+        <div class="course-container">
+
+            {% for course in courses %}
+            <div class="course-box">
+
+                <!-- IMAGE WRAPPER (Fixed .url trap) -->
+                <div class="thumb-wrapper">
+                    <img src="{{ course.course_image.url }}" alt="{{ course.course_name }}">
+                </div>
+
+                <!-- CARD CONTENT -->
+                <div class="card-content">
+                    <h2>{{ course.course_name }}</h2>
+                    <p>{{ course.description }}</p>
+
+                    <div class="card-footer">
+                        <h3>₹{{ course.price }}</h3>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </main>
+
+    <!-- THEME SYNC ENGINE (Matches exact dashboard key) -->
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

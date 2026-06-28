@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* LIGHT THEME EXAM ROOM TOKENS */
+    --bg-page: #f1f5f9;
+    --card-bg: #ffffff;
+    --panel-bg: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-glow: rgba(79, 70, 229, 0.22);
+    --accent-amber: #f59e0b;
+    --danger: #ef4444;
+    --border: #e2e8f0;
+    --hud-bg: rgba(255, 255, 255, 0.88);
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* DARK CYBER-TERMINAL TOKENS */
+body.dark-mode {
+    --bg-page: #090d16;
+    --card-bg: #111827;
+    --panel-bg: #161f30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --hud-bg: rgba(17, 24, 39, 0.88);
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    --primary-glow: rgba(99, 102, 241, 0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body { background-color: var(--bg-page); color: var(--text-main); transition: 0.35s ease; overflow-x: hidden; }
+
+/* =========================================================
+   1. STICKY TOP EXAM HUD
+========================================================= */
+.exam-hud-top {
+    position: sticky; top: 0; z-index: 1000; height: 76px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 5%; background: var(--hud-bg); backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+}
+
+.hud-left, .hud-right { display: flex; align-items: center; gap: 20px; }
+
+.btn-leave-exam {
+    text-decoration: none; color: #fff; background: var(--danger); font-weight: 700;
+    font-size: 0.88rem; padding: 10px 18px; border-radius: 50px; display: flex;
+    align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); transition: 0.25s ease;
+}
+.btn-leave-exam:hover { background: #dc2626; transform: translateY(-2px); }
+
+.exam-brand { display: flex; align-items: center; gap: 10px; }
+.exam-brand h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+@keyframes blinkRed { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+.pulse-red { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; display: inline-block; animation: blinkRed 1.2s infinite; }
+
+.timer-badge {
+    background: var(--panel-bg); border: 1.5px solid var(--border); padding: 10px 18px;
+    border-radius: 50px; display: flex; align-items: center; gap: 10px; font-size: 1.15rem; font-weight: 800; font-variant-numeric: tabular-nums; transition: 0.3s;
+}
+.text-amber { color: var(--accent-amber); }
+
+/* Triggered via JS when under 1 min */
+.timer-danger { border-color: var(--danger) !important; color: var(--danger) !important; background: rgba(239,68,68,0.1) !important; animation: bounce 0.8s infinite; }
+
+.btn-theme-exam { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); cursor: pointer; transition: 0.3s; font-size: 1.05rem; }
+.btn-theme-exam:hover { border-color: var(--primary); color: var(--primary); transform: rotate(15deg); }
+
+/* =========================================================
+   2. EXAM WORKSPACE & QUESTION STREAM
+========================================================= */
+.exam-workspace { max-width: 950px; margin: 40px auto; padding: 0 4%; }
+.questions-stream { display: flex; flex-direction: column; gap: 32px; }
+
+.question-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 26px;
+    padding: 36px; box-shadow: var(--card-shadow); transition: border-color 0.3s ease; animation: fadeUp 0.6s ease forwards;
+}
+.question-card:focus-within { border-color: var(--primary); }
+
+.q-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.q-number { font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; background: rgba(79,70,229,0.08); padding: 6px 14px; border-radius: 50px; }
+.q-marks { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); }
+
+.q-text { font-size: 1.25rem; font-weight: 800; line-height: 1.5; margin-bottom: 24px; color: var(--text-main); }
+
+/* Options Grid (Killer Interactive Hook) */
+.options-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+.option-box {
+    position: relative; border: 1.5px solid var(--border); border-radius: 16px; padding: 16px 20px;
+    cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); background: var(--panel-bg);
+    display: flex; align-items: center; gap: 14px; font-size: 1.02rem; font-weight: 600; color: var(--text-main);
+}
+
+.option-box input[type="radio"] { position: absolute; opacity: 0; }
+
+.opt-indicator { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--text-muted); flex-shrink: 0; transition: 0.25s; position: relative; }
+
+/* WHEN OPTION IS CHECKED */
+.option-box:has(input:checked) {
+    border-color: var(--primary); background: rgba(79, 70, 229, 0.08);
+    box-shadow: 0 8px 20px var(--primary-glow); transform: translateX(6px); color: var(--primary); font-weight: 800;
+}
+.option-box:has(input:checked) .opt-indicator { border-color: var(--primary); background: var(--primary); }
+.option-box:has(input:checked) .opt-indicator::after { content: ""; position: absolute; top: 5px; left: 5px; width: 8px; height: 8px; background: #fff; border-radius: 50%; }
+
+/* Numerical Inputs */
+.integer-grp { display: flex; flex-direction: column; gap: 10px; max-width: 350px; }
+.int-label { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); }
+.integer-input {
+    width: 100%; padding: 16px; border-radius: 14px; border: 1.5px solid var(--border);
+    background: var(--panel-bg); color: var(--text-main); font-size: 1.15rem; font-weight: 800; outline: none; transition: 0.3s;
+}
+.integer-input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 0 0 4px var(--primary-glow); }
+
+/* =========================================================
+   3. FINAL SUBMIT BANNER
+========================================================= */
+.submit-section { margin-top: 60px; }
+.submit-card { background: linear-gradient(135deg, var(--card-bg), var(--panel-bg)); border: 2px solid rgba(79,70,229,0.3); border-radius: 28px; padding: 40px; display: flex; justify-content: space-between; align-items: center; gap: 24px; box-shadow: var(--card-shadow); }
+.sub-info h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+.sub-info p { color: var(--text-muted); font-size: 0.92rem; max-width: 450px; }
+
+.submit-btn {
+    background: var(--primary); color: #fff; border: none; padding: 18px 38px; border-radius: 50px;
+    font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 10px 25px var(--primary-glow); transition: all 0.3s ease; white-space: nowrap;
+}
+.submit-btn:hover { background: var(--primary-hover); transform: translateY(-3px) scale(1.02); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .exam-hud-top { padding: 0 4%; }
+    .btn-leave-exam span { display: none; } /* Only shows exit icon on phone */
+    .btn-leave-exam { padding: 10px 14px; border-radius: 12px; }
+    .exam-brand h2 { max-width: 140px; font-size: 1rem; }
+    .timer-badge { padding: 8px 12px; font-size: 1rem; }
+    .question-card { padding: 24px; border-radius: 22px; }
+    .submit-card { flex-direction: column; text-align: center; padding: 28px; }
+    .submit-btn { width: 100%; justify-content: center; }
+}

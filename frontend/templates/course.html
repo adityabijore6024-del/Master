@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{{ course.course_name }} — Classroom | EduMaster</title>
+        
+        <!-- Static CSS & FontAwesome -->
+        {% load static %}
+    <link rel="stylesheet" href="{% static 'css/course.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================================================
+         TOP FIXED CORNER BUTTONS (STRICT PLACEMENT)
+    ========================================================== -->
+    <div class="top-bar-fixed">
+        <a href="{% url 'home' %}" class="btn-action-float nav-home" title="Back to Dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+
+        <!-- STRICT ADDITION: SYNCED THEME TOGGLE BUTTON -->
+        <button id="themeToggle" class="btn-action-float nav-theme" title="Switch Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- =========================================================
+         MAIN CLASSROOM WORKSPACE
+    ========================================================== -->
+    <main class="classroom-workspace">
+
+        <!-- COURSE HERO BANNER -->
+        <header class="course-hero">
+            <div class="hero-badge">
+                <i class="fa-solid fa-circle-check"></i> Enrolled Student Suite
+            </div>
+            <h1>{{ course.course_name }}</h1>
+            <p>Welcome back! Select a learning pillar below to resume your professional trajectory.</p>
+        </header>
+
+        <!-- THE 4 PILLARS OF LEARNING (BENTO GRID) -->
+        <section class="lecture-grid">
+
+            <!-- 1. VIDEO LECTURES -->
+            <a href="{{ lecture.video_link }}" class="lecture-card card-video" target="_blank">
+                <div class="card-inner-top">
+                    <div class="card-icon icon-rose"><i class="fa-solid fa-circle-play"></i></div>
+                    <span class="module-tag">Module 01</span>
+                </div>
+                
+                <div class="card-text">
+                    <h3>Video Lectures</h3>
+                    <p>Stream recorded HD session modules & conceptual breakdowns.</p>
+                </div>
+
+                <div class="card-action">
+                    <span>Watch Sessions</span> <i class="fa-solid fa-arrow-right-long action-arrow"></i>
+                </div>
+            </a>
+
+            <!-- 2. NOTES -->
+            <a href="{{ lecture.notes_link }}" class="lecture-card card-notes" target="_blank">
+                <div class="card-inner-top">
+                    <div class="card-icon icon-indigo"><i class="fa-solid fa-file-lines"></i></div>
+                    <span class="module-tag">Module 02</span>
+                </div>
+
+                <div class="card-text">
+                    <h3>Study Notes</h3>
+                    <p>Download high-yield PDF revision handbooks & cheat sheets.</p>
+                </div>
+
+                <div class="card-action">
+                    <span>Access PDFs</span> <i class="fa-solid fa-arrow-right-long action-arrow"></i>
+                </div>
+            </a>
+
+            <!-- 3. ASSIGNMENTS -->
+            <a href="{{ lecture.assignment_link }}" class="lecture-card card-task" target="_blank">
+                <div class="card-inner-top">
+                    <div class="card-icon icon-amber"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <span class="module-tag">Module 03</span>
+                </div>
+
+                <div class="card-text">
+                    <h3>Assignments</h3>
+                    <p>Solve practical coding exercises & submit homework projects.</p>
+                </div>
+
+                <div class="card-action">
+                    <span>Solve Tasks</span> <i class="fa-solid fa-arrow-right-long action-arrow"></i>
+                </div>
+            </a>
+
+            <!-- 4. TESTS (Django Internal URL strictly preserved) -->
+            <a href="{% url 'test_list' course.id %}" class="lecture-card card-test">
+                <div class="card-inner-top">
+                    <div class="card-icon icon-emerald"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <span class="module-tag">Module 04</span>
+                </div>
+
+                <div class="card-text">
+                    <h3>Live Assessments</h3>
+                    <p>Attempt timed examination quizzes & evaluate your score telemetry.</p>
+                </div>
+
+                <div class="card-action">
+                    <span>Attempt Test</span> <i class="fa-solid fa-arrow-right-long action-arrow"></i>
+                </div>
+            </a>
+
+        </section>
+
+    </main>
+
+    <!-- THEME SYNC ENGINE (Matches exact dashboard key) -->
+    <script>
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        if(localStorage.getItem('edumaster_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('edumaster_theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
