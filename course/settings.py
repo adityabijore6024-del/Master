@@ -229,16 +229,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Gemini API
 GEMINI_API_KEY = os.environ.get(
     "GEMINI_API_KEY",
-    "YOUR_LOCAL_GEMINI_API_KEY"
+    "AQ.Ab8RN6JZxY8akIw3pMcdk7nz9oKZcFQ_rcIhcyQvmSOq0abR8A"
 )
 
 # Razorpay
 RAZORPAY_KEY_ID = os.environ.get(
     "RAZORPAY_KEY_ID",
-    "rzp_test_xxxxxxxxxxxxx"
+    "rzp_test_T7WAoq5vjPbjGS"
 )
 
 RAZORPAY_KEY_SECRET = os.environ.get(
     "RAZORPAY_KEY_SECRET",
-    "xxxxxxxxxxxxxxxxxxxxxxxx"
+    "Bh40t2GEFmzYX7uYX9XdmXH9"
 )
