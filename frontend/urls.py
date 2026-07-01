@@ -47,17 +47,6 @@ urlpatterns = [
     # PAYMENT
     # =====================================================
 
-    path(
-        "payment/",
-        views.payment_view,
-        name="payment"
-    ),
-
-    path(
-        "payment-success/",
-        views.payment_success,
-        name="payment_success"
-    ),
 
     path(
         "payment2/<int:course_id>/",

@@ -17,6 +17,8 @@
     --hover-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.18);
 }
 
+.mentor-avatar-wrap { width: 36px; height: 36px; border-radius: 12px; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 12px var(--primary-glow); display: flex; align-items: center; justify-content: center; }
+.mentor-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
 /* DARK CYBER-CATALOG TOKENS */
 body.dark-mode {
     --bg-page: #090d16;

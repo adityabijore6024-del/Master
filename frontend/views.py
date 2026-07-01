@@ -81,17 +81,52 @@ def landing_view(request):
         "index.html"
     )
 
-
 # ==========================================
 # Policy Page
 # ==========================================
 
 def policy_view(request):
 
-    return render(
-        request,
-        "policy.html"
-    )
+    if request.method == "POST":
+
+        data = request.session.get("signup_data")
+
+        if not data:
+            return redirect("signup")
+
+        if User.objects.filter(username=data["username"]).exists():
+            request.session.pop("signup_data", None)
+            return render(
+                request,
+                "login.html",
+                {"error": "Username already exists."}
+            )
+
+        if User.objects.filter(email=data["email"]).exists():
+            request.session.pop("signup_data", None)
+            return render(
+                request,
+                "login.html",
+                {"error": "Email already registered."}
+            )
+
+        user = User.objects.create_user(
+            username=data["username"],
+            email=data["email"],
+            password=data["password"]
+        )
+
+        Profile.objects.create(
+            user=user,
+            phone=data["mobile"],
+            age=data["age"]
+        )
+
+        request.session.pop("signup_data", None)
+
+        return redirect("login")
+
+    return render(request, "policy.html")
 
 
 # ==========================================
@@ -102,54 +137,27 @@ def signup_view(request):
 
     if request.method == "POST":
 
-        username = request.POST.get(
-            "username"
-        )
+        username = request.POST.get("username")
+        age = request.POST.get("age")
+        mobile = request.POST.get("mobile")
+        email = request.POST.get("email")
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
 
-        age = request.POST.get(
-            "age"
-        )
-
-        mobile = request.POST.get(
-            "mobile"
-        )
-
-        email = request.POST.get(
-            "email"
-        )
-
-        password1 = request.POST.get(
-            "password1"
-        )
-
-        password2 = request.POST.get(
-            "password2"
-        )
-
-        if User.objects.filter(
-            username=username
-        ).exists():
+        if User.objects.filter(username=username).exists():
 
             return render(
                 request,
                 "login.html",
-                {
-                    "error":
-                    "Username already exists."
-                }
+                {"error": "Username already exists."}
             )
 
-        if User.objects.filter(
-            email=email
-        ).exists():
+        if User.objects.filter(email=email).exists():
 
             return render(
                 request,
                 "login.html",
-                {
-                    "error":
-                    "Email already registered."
-                }
+                {"error": "Email already registered."}
             )
 
         if password1 != password2:
@@ -157,115 +165,20 @@ def signup_view(request):
             return render(
                 request,
                 "login.html",
-                {
-                    "error":
-                    "Passwords do not match."
-                }
+                {"error": "Passwords do not match."}
             )
 
         request.session["signup_data"] = {
-
             "username": username,
-
             "age": age,
-
             "mobile": mobile,
-
             "email": email,
-
             "password": password1
-
         }
 
         return redirect("policy")
 
-    return render(
-        request,
-        "login.html"
-    )
-
-# ==========================================================
-# POLICY PAGE
-# ==========================================================
-def policy_view(request):
-    if request.method == "POST":
-        return redirect("payment")
-
-    return render(request, "policy.html")
-
-
-# ==========================================================
-# PAYMENT PAGE
-# ==========================================================
-
-import razorpay
-from django.conf import settings
-
-
-def payment_view(request):
-
-    client = razorpay.Client(
-        auth=(
-            settings.RAZORPAY_KEY_ID,
-            settings.RAZORPAY_KEY_SECRET
-        )
-    )
-
-    order = client.order.create({
-        "amount": 9900,      # ₹99
-        "currency": "INR",
-        "payment_capture": 1
-    })
-
-    request.session["order_id"] = order["id"]
-
-    return render(
-        request,
-        "payment.html",
-        {
-            "payment": order,
-            "razorpay_key": settings.RAZORPAY_KEY_ID,
-        }
-    )
-
-
-# ==========================================================
-# PAYMENT SUCCESS
-# ==========================================================
-
-def payment_success(request):
-
-    data = request.session.get("signup_data")
-    order_id = request.session.get("order_id")
-
-    if not data or not order_id:
-        return redirect("signup")
-
-    user = User.objects.create_user(
-
-        username=data["username"],
-
-        email=data["email"],
-
-        password=data["password"]
-
-    )
-
-    Profile.objects.create(
-
-        user=user,
-
-        phone=data["mobile"],
-
-        age=data["age"]
-
-    )
-
-    request.session.pop("signup_data", None)
-    request.session.pop("order_id", None)
-
-    return redirect("login")
-
+    return render(request, "login.html")
 
 # ==========================================
 # Login
@@ -593,6 +506,9 @@ def activity(request):
 
 
 # @login_required(login_url="login")
+
+from django.db.models import Q
+
 def home_view(request):
 
     slides = Slide.objects.all().order_by("id")
@@ -601,11 +517,22 @@ def home_view(request):
 
     profile = None
 
+    purchased_ids = []
+
     if request.user.is_authenticated:
 
-        profile,created = Profile.objects.get_or_create(
-          user=request.user
-         )
+        profile, created = Profile.objects.get_or_create(
+            user=request.user
+        )
+
+        purchased_ids = list(
+            PurchasedCourse.objects.filter(
+                user=request.user
+            ).values_list(
+                "course_id",
+                flat=True
+            )
+        )
 
     query = request.GET.get("q")
 
@@ -636,6 +563,8 @@ def home_view(request):
             "courses": courses,
 
             "profile": profile,
+
+            "purchased_ids": purchased_ids,
 
         }
 
@@ -804,35 +733,8 @@ def course_access(request, course_id):
 # ==========================================
 # DOUBT
 # ==========================================
-client = genai.Client(
-    api_key=settings.GEMINI_API_KEY
-)
 
 def doubt_solver(request):
-
-    answer = ""
-
-    if request.method == "POST":
-
-        question = request.POST.get(
-            "question"
-        )
-
-        try:
-
-            response = client.models.generate_content(
-
-                model="gemini-2.5-flash",
-
-                contents=question
-
-            )
-
-            answer = response.text
-
-        except Exception as e:
-
-            answer = str(e)
 
     return render(
 
@@ -842,7 +744,7 @@ def doubt_solver(request):
 
         {
 
-            "answer": answer
+            "api_key": settings.GEMINI_API_KEY  # Ye line jaruri hai
 
         }
 
@@ -855,9 +757,9 @@ def doubt_solver(request):
 from django.http import JsonResponse
 from django.urls import reverse
 from .models import Course, Test
-
 from django.http import JsonResponse
 from django.db.models import Q
+
 
 def live_search(request):
 
@@ -867,46 +769,89 @@ def live_search(request):
 
     tests = []
 
+    purchased_ids = []
+
+    if request.user.is_authenticated:
+
+        purchased_ids = list(
+
+            PurchasedCourse.objects.filter(
+
+                user=request.user
+
+            ).values_list(
+
+                "course_id",
+                flat=True
+
+            )
+
+        )
+
     if query:
 
-        courses = list(
+        course_queryset = Course.objects.filter(
 
-            Course.objects.filter(
+            Q(course_name__icontains=query) |
 
-                Q(course_name__icontains=query) |
+            Q(description__icontains=query)
 
-                Q(description__icontains=query)
+        ).select_related("teacher")
 
-            ).values(
 
-                "id",
-                "course_name",
-                "description",
-                "price",
-            )
+        for course in course_queryset:
+
+            courses.append({
+
+                "id": course.id,
+
+                "course_name": course.course_name,
+
+                "description": course.description,
+
+                "price": course.price,
+
+                "teacher_name": course.teacher.name,
+
+                "course_image": (
+                    course.course_image.url
+                    if course.course_image
+                    else ""
+                ),
+
+            })
+
+
+        test_queryset = Test.objects.filter(
+
+            title__icontains=query
+
+        ).select_related(
+
+            "course"
 
         )
 
-        tests = list(
 
-            Test.objects.filter(
+        for test in test_queryset:
 
-                title__icontains=query
+            tests.append({
 
-            ).values(
+                "id": test.id,
 
-                "id",
-                "title",
+                "title": test.title,
 
-            )
+                "course_id": test.course.id,
 
-        )
+                "purchased": test.course.id in purchased_ids,
+
+            })
 
     return JsonResponse({
 
         "courses": courses,
 
-        "tests": tests
+        "tests": tests,
 
     })
 # ==========================================

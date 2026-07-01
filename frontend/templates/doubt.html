@@ -5,10 +5,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-{% load static %}
-    <link rel="stylesheet" href="{% static 'css/doubt.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
+        <link rel="icon" href="data:,">
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/doubt.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
 <body>
 
     <header class="cortex-nav">
@@ -144,7 +146,8 @@
     </main>
 
     <script>
-        const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+        // API Key ab Django backend se aayegi
+        const API_KEY = "{{ api_key|escapejs }}";
 
         let currentDomain = "academic";
         const doubtInput = document.getElementById("userDoubt");
@@ -203,7 +206,7 @@
             const rawPayload = `${systemPersona}\n\nStudent Request: "${userText}"`;
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: [{ parts: [{ text: rawPayload }] }] })

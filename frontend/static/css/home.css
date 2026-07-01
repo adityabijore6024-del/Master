@@ -62,16 +62,43 @@ header {
     border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--hover-shadow);
     max-height: 300px; overflow-y: auto; z-index: 1001;
 }
+.suggestion-item { padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover { background: rgba(79,70,229,0.08); color: var(--primary); }
+.suggestion-item .type { font-size: 0.72rem; font-weight: 800; background: var(--panel-bg); padding: 2px 8px; border-radius: 6px; color: var(--primary); text-transform: uppercase; }
 
 /* Navigation Right Menu */
-.right { display: flex; align-items: center; gap: 24px; }
+.right { display: flex; align-items: center; gap: 24px; transition: right 0.35s ease; }
 .right a { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.92rem; transition: 0.2s; }
 .right a:hover { color: var(--primary); transform: translateY(-2px); }
 
 .theme-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel-bg); color: var(--text-main); cursor: pointer; transition: 0.3s; font-size: 1.05rem; }
 .theme-btn:hover { border-color: var(--primary); color: var(--primary); transform: rotate(15deg); }
 
-.menu-btn { display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+.menu-btn{
+    display:none;
+    background:transparent;
+    border:none;
+    color:var(--text-main);
+    font-size:1.5rem;
+    cursor:pointer;
+
+    width:42px;
+    height:42px;
+    border-radius:50%;
+
+    transition:.35s ease;
+}
+
+.menu-btn:hover{
+    background:var(--panel-bg);
+    color:var(--primary);
+}
+
+.menu-btn.active{
+    transform:rotate(90deg);
+    color:var(--primary);
+}
 
 /* =========================================================
    2. HERO SLIDER ANIMATION ENGINE
@@ -81,9 +108,9 @@ main { max-width: 1300px; margin: 30px auto; padding: 0 4%; }
 .slider { position: relative; width: 100%; border-radius: 28px; overflow: hidden; box-shadow: var(--card-shadow); margin-bottom: 40px; border: 1px solid var(--border); transition: all 0.4s ease; }
 .slides { display: flex; transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1); }
 
-.slide { min-width: 100%; position: relative; }
-.slide-card-wrap { width: 100%; height: 420px; overflow: hidden; position: relative; }
-.slide-card-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+.slide { min-width: 100%; position: relative; flex-shrink: 0; }
+.slide-card-wrap { width: 100%; height: 420px; overflow: hidden; position: relative; max-height: 50vh; }
+.slide-card-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
 
 /* 3D TILT EFFECT & GLOW ON HOVER */
 .slider:hover .slide-card-wrap img { transform: scale(1.05); }
@@ -182,23 +209,76 @@ main { max-width: 1300px; margin: 30px auto; padding: 0 4%; }
 @keyframes fadeUp   { from { opacity: 0; transform: translateY(30px); }  to { opacity: 1; transform: translateY(0); } }
 
 /* =========================================================
-   6. MOBILE VIEW HAMBURGER MENU
+   6. MOBILE VIEW FIX (FADE & SCALE DROPDOWN ANIMATION)
 ========================================================= */
 @media (max-width: 850px) {
-    header { padding: 0 4%; }
+    /* Header ko relative banaya taaki menu uske theek neeche open ho */
+    header { padding: 0 4%; position: relative; } 
+    
     .search-bar { max-width: 200px; margin: 0 10px; }
     #searchInput { padding: 10px 14px; font-size: 0.85rem; }
-    .menu-btn { display: block; }
     
+    .menu-btn { display: block; z-index: 1002; }
+    
+    /* NEW LOGIC: Dropdown Menu (No Sliding) */
     .right {
-        position: fixed; top: 76px; right: -100%; width: 260px; height: calc(100vh - 76px);
-        background: var(--card-bg); flex-direction: column; align-items: flex-start;
-        padding: 30px; gap: 20px; box-shadow: -10px 0 25px rgba(0,0,0,0.1); border-left: 1px solid var(--border);
-        transition: right 0.35s ease; z-index: 999;
+        position: absolute; 
+        top: 70px; /* Header ke theek neeche */
+        right: 4%; /* Screen ke right side margin me */
+        width: 220px; 
+        height: auto;
+        background: var(--card-bg); 
+        flex-direction: column; 
+        align-items: flex-start;
+        padding: 20px; 
+        gap: 15px; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        z-index: 999;
+        
+        /* HIDING ANIMATION (Gayab ho jayega, screen ke bahar nahi jayega) */
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.9); /* Halkasa chota hoke chup jayega */
+        transform-origin: top right; /* Animation 3-dot se nikalta hua lagega */
+        pointer-events: none; /* Chhupe hone par click nahi hoga */
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); 
     }
-    .right.show { right: 0; }
+    
+    /* SHOW ANIMATION (Jaise hi JS .show lagayega) */
+    .right.show { 
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+    
+    /* Menu Links Styling */
     .right a { width: 100%; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .right a:last-child { border-bottom: none; padding-bottom: 0; } /* Last line hata di */
+    
     .slide-card-wrap { height: 240px; }
     .action-box { max-width: 150px; }
     .action-btn { padding: 11px 12px; font-size: 0.82rem; }
+}
+
+/* Ensure menu is explicitly reset when scaling back to desktop */
+@media (min-width: 851px) {
+    .right {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        pointer-events: auto !important;
+        height: auto !important;
+        width: auto !important;
+        flex-direction: row !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        gap: 24px !important;
+    }
+    .right a { border-bottom: none !important; padding-bottom: 0 !important; width: auto !important; }
 }
