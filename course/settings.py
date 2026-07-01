@@ -1,12 +1,11 @@
 """
 Django settings for course project.
 """
-
 from pathlib import Path
 import os
 import dj_database_url
 
-# Optional: Agar tum local .env file use kar rahe ho variables ke liye
+# Load environment variables from .env if it exists
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -15,70 +14,39 @@ except ImportError:
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# ======================================================
 # SECURITY
-# ======================================================
-
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "django-insecure-local-dev-key"
-)
-
-# Railway par Env Variable me DEBUG=False set karna zaroori hai
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-dev-key")
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
-# Localhost allow karega, aur Railway ke default domains allow karega. 
-# Agar custom domain hai, toh use Railway dashboard me ALLOWED_HOSTS variable me comma-separated daal dena.
-env_allowed_hosts = os.environ.get("ALLOWED_HOSTS")
-if env_allowed_hosts:
-    ALLOWED_HOSTS = env_allowed_hosts.split(",")
-else:
-    ALLOWED_HOSTS = [
-        "localhost", 
-        "127.0.0.1", 
-        ".railway.app", 
-        ".up.railway.app"
-    ]
+# ALLOWED_HOSTS fix - Indentation corrected
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".railway.app", ".up.railway.app"]
+if os.environ.get("ALLOWED_HOSTS"):
+    ALLOWED_HOSTS.extend(os.environ.get("ALLOWED_HOSTS").split(","))
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.railway.app",
-    "https://*.up.railway.app",
-]
+CSRF_TRUSTED_ORIGINS = ["https://*.railway.app", "https://*.up.railway.app"]
 
 # HTTPS configuration for Production
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-# Agar DEBUG False hai (production), toh automatic HTTPS par redirect karega
-SECURE_SSL_REDIRECT = not DEBUG 
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
 
-
-# ======================================================
 # APPS
-# ======================================================
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    
-    "whitenoise.runserver_nostatic", # Whitenoise for static files
-    
+    "whitenoise.runserver_nostatic", 
     "django.contrib.staticfiles",
     "frontend",
     "cloudinary",
     "cloudinary_storage",
 ]
 
-
-# ======================================================
-# MIDDLEWARE
-# ======================================================
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware", # Whitenoise middleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -88,11 +56,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "course.urls"
-
-
-# ======================================================
-# TEMPLATE
-# ======================================================
 
 TEMPLATES = [
     {
@@ -111,82 +74,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "course.wsgi.application"
 
-
-# ======================================================
 # DATABASE
-# ======================================================
-
-# Local par SQLite use karega. 
-# Railway par agar tumne Postgres add kiya hai, toh ye automatically 'DATABASE_URL' env variable ko pick kar lega.
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR/'db.sqlite3'}",
         conn_max_age=600,
-        conn_health_checks=True,
     )
 }
 
-
-# ======================================================
-# PASSWORD
-# ======================================================
-
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
-
-# ======================================================
-# LANGUAGE
-# ======================================================
-
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "Asia/Kolkata"
-USE_I18N = True
-USE_TZ = True
-
-
-# ======================================================
-# STATIC FILES
-# ======================================================
-
+# STATIC & MEDIA
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-# Whitenoise storage setup
+STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
-
-
-# ======================================================
-# MEDIA
-# ======================================================
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-
-# ======================================================
-# LOGIN
-# ======================================================
-
-LOGIN_URL = "login"
-
-
-# ======================================================
-# DEFAULT PK
-# ======================================================
-
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "Asia/Kolkata"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-# ==============================================================================
-# API KEYS (Local + Railway)
-# ==============================================================================
-
-
