@@ -189,26 +189,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # API KEYS (Local + Railway)
 # ==============================================================================
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6Iu1X65lE_BJ09asa52rM5Eun2syk7ViKB37zXFhenvKw")
-RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_T7WAoq5vjPbjGS")
-RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "Bh40t2GEFmzYX7uYX9XdmXH9")
+# GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6Iu1X65lE_BJ09asa52rM5Eun2syk7ViKB37zXFhenvKw")
+# RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_T7WAoq5vjPbjGS")
+# RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "Bh40t2GEFmzYX7uYX9XdmXH9")
 
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get(
-        "CLOUDINARY_CLOUD_NAME",
-        "ufyhxclx"
-    ),
+# CLOUDINARY_STORAGE = {
+#     "CLOUD_NAME": os.environ.get(
+#         "CLOUDINARY_CLOUD_NAME",
+#         "ufyhxclx"
+#     ),
 
-    "API_KEY": os.environ.get(
-        "CLOUDINARY_API_KEY",
-        "777962152369822"
-    ),
+#     "API_KEY": os.environ.get(
+#         "CLOUDINARY_API_KEY",
+#         "777962152369822"
+#     ),
 
-    "API_SECRET": os.environ.get(
-        "CLOUDINARY_API_SECRET",
-        "NPK0702FJbaTSX0OeaYEEfbK0rU"
-    ),
-}
+#     "API_SECRET": os.environ.get(
+#         "CLOUDINARY_API_SECRET",
+#         "NPK0702FJbaTSX0OeaYEEfbK0rU"
+#     ),
+# }
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
